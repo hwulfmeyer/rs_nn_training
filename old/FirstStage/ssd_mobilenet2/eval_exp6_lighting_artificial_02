@@ -1,0 +1,7 @@
+#!/bin/bash
+
+/usr/bin/python3 /home/lhoyer/tensorflow/models/research/object_detection/eval.py \
+    --logtostderr \
+    --pipeline_config_path=/media/data/Dokumente/Nextcloud/Studium/Bachelorarbeit/CNNRobotLocalisation/FirstStage/ssd_mobilenet2/exp6_lighting_artificial.config \
+    --checkpoint_dir="/home/lhoyer/cnn_robot_localization/training/first_stage_2/ssd_mobilenet2/exp6/lighting_artificial/train_02/" \
+    --eval_dir="/home/lhoyer/cnn_robot_localization/training/first_stage_2/ssd_mobilenet2/exp6/lighting_artificial/eval_02/"

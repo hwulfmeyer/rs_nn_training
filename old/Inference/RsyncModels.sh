@@ -1,0 +1,2 @@
+#rsync --include='model-final.h5*' --include='*/' --exclude='*' --max-size=100m --progress -amvz lukas@ws:/home/lhoyer/cnn_robot_localization/training/second_stage_2/sstage_amount_20000*cat /home/lhoyer/cnn_robot_localization/training_result_models/second_stage_2
+rsync --include='model-05*' --include='*/' --exclude='*' --max-size=100m --progress -amvz lukas@ws:/home/lhoyer/cnn_robot_localization/training/second_stage_2/sstage_amount_20000*bin /home/lhoyer/cnn_robot_localization/training_result_models/second_stage_2

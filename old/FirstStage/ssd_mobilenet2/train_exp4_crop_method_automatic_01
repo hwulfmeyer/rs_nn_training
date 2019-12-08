@@ -1,0 +1,6 @@
+#!/bin/bash
+
+/usr/bin/python3 /home/lhoyer/tensorflow/models/research/object_detection/train.py \
+    --logtostderr \
+    --pipeline_config_path=/media/data/Dokumente/Nextcloud/Studium/Bachelorarbeit/CNNRobotLocalisation/FirstStage/ssd_mobilenet2/exp4_crop_method_automatic.config \
+    --train_dir="/home/lhoyer/cnn_robot_localization/training/first_stage_2/ssd_mobilenet2/exp4/crop_method_automatic/train_01/"

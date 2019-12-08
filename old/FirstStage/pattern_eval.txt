@@ -1,0 +1,7 @@
+#!/bin/bash
+
+/usr/bin/python3 /home/lhoyer/tensorflow/models/research/object_detection/eval.py \
+    --logtostderr \
+    --pipeline_config_path={PIPELINE} \
+    --checkpoint_dir={TRAIN_DIR} \
+    --eval_dir={EVAL_DIR}
