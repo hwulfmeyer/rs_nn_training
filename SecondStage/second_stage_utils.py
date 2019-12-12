@@ -7,7 +7,7 @@ import io
 from keras import backend as K
 from keras.utils import np_utils
 
-from Utils.file_utils import *
+from rs_nn_training.Utils.file_utils import *
 
 # ANGLES_PER_BIN = 4
 # NUM_ORI_BINS = 90 # 360 / 4

@@ -14,13 +14,13 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard,
 from keras.models import load_model
 
 import sys
-#durch rs_nn_training path ersetzen
-sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/rs_nn_training/")
+#path des dir in dem rs_nn_training liegt
+sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/")
 
 from object_detection.utils import label_map_util
-from old.DataPreprocessing.experiment_definitions import *
-from Utils.file_utils import *
-from second_stage_utils import *
+from rs_nn_training.old.DataPreprocessing.experiment_definitions import *
+from rs_nn_training.Utils.file_utils import *
+from rs_nn_training.SecondStage.second_stage_utils import *
 
 ################################################################################
 
