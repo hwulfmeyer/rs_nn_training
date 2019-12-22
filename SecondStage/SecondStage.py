@@ -1,3 +1,7 @@
+# output:
+# log_path + '/experiment_config.json'
+# log_path+"model-final.h5"
+
 import os
 import re
 import threading
@@ -24,12 +28,12 @@ from rs_nn_training.SecondStage.second_stage_utils import *
 
 ################################################################################
 
-GPU = True
+GPU = False
 
-LOG_PATH = "/home/josi/OvGU/Rolling\ Swarm//rs_nn_training/training/second_stage/"
-LABEL_MAP_PATH = '/home/josi/OvGU/Rolling\ Swarm/rs_nn_training/old/LabelMaps/robot_label_map.pbtxt'
-TRAIN_DIR = "/home/josi/OvGU/Rolling\ Swarm/rs_nn_training/data/"
-EVAL_DIR = "/home/josi/OvGU/Rolling\ Swarm/rs_nn_training/data/Validation/secondstage110balance4/"
+LOG_PATH = "/home/josi/OvGU/Rolling Swarm/rs_nn_training/training/second_stage/"
+LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/old/LabelMaps/robot_label_map.pbtxt'
+TRAIN_DIR = "/home/josi/OvGU/Rolling Swarm/rs_nn_training/data/"
+EVAL_DIR = "/home/josi/OvGU/Rolling Swarm/rs_nn_training/data/Validation/secondstage110balance4/"
 
 BATCH_SIZE = 32
 
@@ -127,6 +131,7 @@ def train(train_record, conf, types, out, rep=1):
         callbacks=[summary,checkpoint],
         shuffle=True
     )
+    print("**********************************************************************************")
     model_final.save(log_path+"model-final.h5")
     print("Finished training for {}_{}".format(conf['name'],t))
 
@@ -141,8 +146,11 @@ def read_command_line_args():
 exp = create_all_sstage_experiments()
 args = read_command_line_args()
 for or_conf in tqdm(exp):
+    print("or_conf", or_conf)
     for r in range(or_conf['repetions']): 
-        train_records = get_recursive_file_list(TRAIN_DIR,file_matchers=[or_conf['dataset']])
+        #train_records = get_recursive_file_list(TRAIN_DIR,file_matchers=[or_conf['dataset']])
+        train_records = get_recursive_file_list(TRAIN_DIR)
+        print("----------------------") 
         for t in or_conf['types']:
             for out in ['_cat','_reg','_bin','']:
                 conf = deepcopy(or_conf)
@@ -168,10 +176,14 @@ for or_conf in tqdm(exp):
                         print('UNKNOWN OUTPUT CONFIG {}'.format(out))
                         continue
                 #in str() gecastet - warum hat das bei Lukas funktioniert?
+                #if not re.match(args.exp_name, train_instance_name):
                 if not re.match(str(args.exp_name), train_instance_name): 
-                    print('Skip '+train_instance_name)
+                    #print('Skip '+train_instance_name)
                     continue
+                print(train_records)
+                print(t)                
                 record_for_type = [e for e in train_records if t in e]
+                print("record_for_type: ", len(record_for_type))
                 assert len(record_for_type) == 1, \
                        "{} for {} has not one item".format(record_for_type, train_instance_name)
                 print("Start training {} for {}".format(train_instance_name,

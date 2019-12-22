@@ -6,14 +6,22 @@ def get_recursive_file_list(path, file_matchers = None,
                             file_excludes = None,
                             file_extensions = None,
                             sort = True):
+    print("#############################") 
     file_list = []
     for root, dirs, files in os.walk(path, ):
+        print('------------------')
+        print(root)
+        print(dirs)
+        print('------------------')
         for f in files:
             file = root+'/'+f
             if (file_matchers == None or any(m in file for m in file_matchers)) and \
                (file_excludes == None or not any(m in file for m in file_excludes)) and \
                (file_extensions == None or file.endswith(tuple(file_extensions))):
                 file_list.append(file)
+    print("#############################")  
+    exit()  
+    print(file_list)    
     if sort:
         file_list.sort()
     return file_list
