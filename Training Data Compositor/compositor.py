@@ -117,6 +117,9 @@ def firststage(isTrainingData):
 
 """
 second stage: Identification CNN and Orientation CNN
+=> Identification CNN: hohe vielfalt an farben, rotations und helligkeit
+=> Orientation CNN: hohe vielfalt an rotations
+
 - uses all crops in CROP_PATH to create the training data
 - crops need to have an alpha channel and a round cut out for the spheros
 - image name must be like so YX.png
@@ -124,8 +127,7 @@ second stage: Identification CNN and Orientation CNN
 
 - random rgb noise backgrounds mit random brightness in Größe 35x35
 - die crops haben die größe 30x30
-- für jeden vorhandenen crop wird für alle 360 Grad ein bild erstellt
-- zusätzlich für jeden der 360 winkel 3 verschiedene helligkeiten, random scale und random position im background
+- crops bekommen eine random rotation, random scale, random helligkeit und random position im background
 - die CSV datei enthält folgende spalten:
 	[image_name, img_class_str, img_class, rot, scl, brtn, pos[0], pos[1]])
 	image_name: vollständige Name der Bilddatei
@@ -159,43 +161,43 @@ def secondstage(isTrainingData):
 
     CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
     for crop in tqdm(CROPS):
-        for k in range(3):
-            for rot in range(360):
-                for brtn in (0.5,1.0,1.5):
-                    img = Image.open(CROP_PATH + crop)
-                    bg = creategaussiannoiseimg(SHAPE = (35,35,3))
+        for k in range(360*2):
+            img = Image.open(CROP_PATH + crop)
+            bg = creategaussiannoiseimg(SHAPE = (35,35,3))
 
-                    #rotation
-                    img = img.rotate(rot, resample=Image.BICUBIC, expand=False)
+            # random rotation
+            rot = np.random.randint(360)
+            img = img.rotate(rot, resample=Image.BICUBIC, expand=False)
 
-                    """
-                    #cropping
-                    w, h = img.size
-                    left = (w - FIXWIDTH)/2
-                    top = (h - FIXHEIGHT)/2
-                    right = (w + FIXWIDTH)/2
-                    bottom = (h + FIXHEIGHT)/2
-                    img = img.crop((left, top, right, bottom))
-                    """
+            """
+            #cropping
+            w, h = img.size
+            left = (w - FIXWIDTH)/2
+            top = (h - FIXHEIGHT)/2
+            right = (w + FIXWIDTH)/2
+            bottom = (h + FIXHEIGHT)/2
+            img = img.crop((left, top, right, bottom))
+            """
 
-                    # random scale
-                    scl = round(np.random.uniform(0.9, 1.1), 2)
-                    img = img.resize((int(scl*img.width),int(scl*img.height)), resample=Image.LANCZOS)
+            # random scale
+            scl = round(np.random.uniform(0.9, 1.1), 2)
+            img = img.resize((int(scl*img.width),int(scl*img.height)), resample=Image.LANCZOS)
 
-                    # brightness transformation
-                    img = ImageEnhance.Brightness(img).enhance(brtn)
+            # random brightness
+            brtn = round(np.random.uniform(0.5, 1.5), 2)
+            img = ImageEnhance.Brightness(img).enhance(brtn)
 
-                    # random position
-                    # !position is the upper left corner of the crop in the picture!
-                    pos = (np.random.randint(0, bg.width-img.width), np.random.randint(0, bg.height-img.height))
-                    bg.paste(img, pos, img)
+            # random position
+            # !position is the upper left corner of the crop in the picture!
+            pos = (np.random.randint(0, bg.width-img.width), np.random.randint(0, bg.height-img.height))
+            bg.paste(img, pos, img)
 
-                    # save image and csv
-                    img_class_str = crop[:-5]
-                    img_class = sphereo_classes.get(img_class_str)
-                    image_name = img_class_str + crop[-5] + "_r" + str(rot) + "_s" + str(scl) + "_b" + str(brtn) + "_p" + str(pos[0]) + str(pos[1]) + str(k) + ".png"
-                    bg.save(IMG_OUT_PATH+image_name)
-                    csv_rows.append([image_name, img_class_str, img_class, rot, scl, brtn, pos[0], pos[1]])
+            # save image and csv
+            img_class_str = crop[:-5]
+            img_class = sphereo_classes.get(img_class_str)
+            image_name = img_class_str + crop[-5] + "_r" + str(rot) + "_" + str(k) + ".png"
+            bg.save(IMG_OUT_PATH+image_name)
+            csv_rows.append([image_name, img_class_str, img_class, rot, scl, brtn, pos[0], pos[1]])
 
 
     with open(IMG_OUT_PATH+"groundtruth.csv", 'w') as csvfile:
@@ -210,6 +212,6 @@ if __name__ == "__main__":
     img.save("gaussian_noise.png")
 
     #firststage(True)
-    firststage(False)
-    #secondstage(True)
-    #secondstage(False)
+    #firststage(False)
+    secondstage(True)
+    secondstage(False)
