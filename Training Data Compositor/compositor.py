@@ -1,199 +1,217 @@
-import PIL
-import numpy.random as nr
-from PIL import Image, ImageDraw, ImageFilter, ImageMath, ImageEnhance
-import tensorflow as tf
-from object_detection.utils import dataset_util
+import csv
+import datetime
+from os import listdir, makedirs
+from os.path import isfile, join
 
-from Utils.file_utils import *
+import numpy as np
+from PIL import Image, ImageEnhance
+from tqdm import tqdm
+import decimal
 
-def is_crop_supported(meta,filters):
-    for k in filters:
-        if k not in meta: continue
-        if meta[k] not in filters[k]:
-            return False
-    return True
+np.random.seed(146324)
 
-def is_background_supported(dataset,filters):
-    return dataset in filters["background_set"]
+sphereo_classes = {
+    "bright_blue": 1,
+    "bright_red": 2,
+    "bright_green": 3,
+    "bright_white": 4,
+    "dark_blue": 5,
+    "dark_green": 6,
+    "dark_red": 7
+}
 
-def balanced_choice(balanced_list):
-    l = balanced_list
-    while isinstance(l,list):
-        if len(l)==1:
-            l = l[0]
-        else:
-            l = nr.choice(l)
-    return l
 
-def generate_balanced_object_list(object_path,filters):
-    typeObjectList = []
-    typeObjectDict = {}
-    metaFileList = get_recursive_file_list(object_path, file_matchers=['meta.json'])
-    for metaFile in metaFileList:
-        meta = load_json(metaFile)
-        directory = metaFile.replace('/meta.json','')
-        img_files = get_recursive_file_list(directory, file_extensions=['.png'])
-        for f in img_files:
-            if meta['identification'] == "undefined": continue
-            if not is_crop_supported(meta,filters): continue
-            meta['crop'] = f
-            key1 = meta['robot_type']
-            key2 = meta['identification']
-            # important for balancing classes
-            if key1 not in typeObjectDict: typeObjectDict[key1] = {}
-            if key2 not in typeObjectDict[key1]: typeObjectDict[key1][key2] = []
-            typeObjectDict[key1][key2].append(meta)
-    for key1 in typeObjectDict:
-        typeObjectList.append([])
-        for key2 in typeObjectDict[key1]:
-            typeObjectList[-1].append(typeObjectDict[key1][key2])
-    return typeObjectList
+"""
+- SHAPE = (height, width, 3)
+- the images have a random brightness
+"""
+def creategaussiannoiseimg(SHAPE = (1200, 1600, 3), brtn = None):
+    noise = np.random.randint(0, 255, SHAPE)
+    noise = noise.astype(dtype=np.uint8)
+    img = Image.fromarray(noise, mode='RGB')
+    img = ImageEnhance.Color(img).enhance(1.2)
+    img = ImageEnhance.Contrast(img).enhance(1.2)
+    # random brightness
+    if brtn is None:
+        brtn = np.random.uniform(0.1, 0.3)
+    img = ImageEnhance.Brightness(img).enhance(brtn)
+    return img
 
-def generate_balanced_background_list(background_path,filters):
-    backgroundFileList = []
-    for d in os.listdir(background_path):
-        if not is_background_supported(d,filters): continue
-        backgroundFileList.append([])
-        for f in get_recursive_file_list(background_path+'/'+d):
-            backgroundFileList[-1].append(f)
-    return backgroundFileList
 
-def custom_randint(min, max):
-    min = round(min)
-    max = round(max)
-    if min == max:
-        return min
-    return nr.randint(min, max)
+"""
+- random rgb noise backgrounds mit random brightness in Größe 300x300
+- auf die backgrounds werden die sphero crops superimposed
+- die crops haben eine random scale, rotation, brightness und position im background
+- die CSV datei enthält folgende spalten:
+	[image_name, xmin, xmax, ymin, ymax, img_class_str, img_class, rot, scl, brtn]
+	image_name: vollständige Name der Bilddatei
+	xmin, xmax, ymin, ymax: sind die koordinaten der bounding box
+	img_class_str: ist der name der klasse (siehe 'sphereo_classes' in compositor.py)
+	img_class: ist die ID der klasse (siehe 'sphereo_classes' in compositor.py)
+	rot: rotationswinkel
+	scl: scalingfaktor
+	brtn: brightnessfaktor
+"""
+def firststage(isTrainingData):
+    TRAIN_SIZE = 1000
+    TEST_SIZE = 300
+    BGHEIGHT = 300
+    BGWIDTH = 300
+    FOLDER = "test/"
+    SIZE = TEST_SIZE
+    if isTrainingData:
+        FOLDER = "training/"
+        SIZE = TRAIN_SIZE
+    OUT_PATH = "output/"
+    CROP_PATH = "crops/" + FOLDER
+    CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
 
-def composite(set_name,set_index,
-              balanced_background_file_list,
-              balanced_object_file_list,
-              config,
-              label_map,
-              img_out_path,
-              out_size_w=1600, out_size_h=1200,
-              export_crop=False,
-              export_arena=True):
-    if export_crop and export_arena:
-        raise Error('export_crop and export_arena are currently not supported at the same time')
-    tf_example = []
-    bg_file = balanced_choice(balanced_background_file_list)
-    bg = Image.open(bg_file).convert('RGB')
-    # TODO: check size of source backgrounds
-    bg = bg.resize((out_size_w, out_size_h), resample=PIL.Image.LANCZOS)
+    timestamp = "{:%Y%m%d_%H%M%S}".format(datetime.datetime.now())
+    timestamp = "X"
+    IMG_OUT_PATH = OUT_PATH+"FirstStage_"+timestamp+"/"  + FOLDER
+    makedirs(IMG_OUT_PATH, exist_ok=True)
+    csv_rows = []
 
-    # Don't use jpg for small image sizes: Compression artifacts around copter
-    filename = set_name + '-img'+str(set_index)+'.jpg'
-
-    xmins,xmaxs,ymins,ymaxs = [],[],[],[]
-    subclasses_text,subclasses,classes_text,classes = [],[],[],[]
-    orientations, dist_to_cam, iframe_w, iframe_h = [],[],[],[]
-    for j in range(nr.randint(1,4)) if export_arena else range(2):
-        obj_meta = balanced_choice(balanced_choice(balanced_choice(balanced_object_file_list)))
-        obj_type = obj_meta["robot_type"]
-        obj = Image.open(obj_meta['crop'])
+    for i in tqdm(range(SIZE)):
+        bg = creategaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
+        crop = np.random.choice(CROPS)
+        img = Image.open(CROP_PATH + crop)
 
         # random scale
-        scl_factor = out_size_w/1600
-        scl_min = config[obj_type]['scl_min']
-        scl_max = config[obj_type]['scl_max']
-        if scl_min == scl_max: scl = scl_min
-        else: scl = nr.uniform(scl_min, scl_max)
-        obj = obj.resize((int(scl*obj.width*scl_factor),int(scl*obj.height*scl_factor)), resample=PIL.Image.LANCZOS)
+        scl = round(np.random.uniform(0.9, 1.1), 2)
+        img = img.resize((int(scl*img.width),int(scl*img.height)), resample=Image.LANCZOS)
 
         # random rotation
-        rot = nr.randint(360)
-        obj = obj.rotate(rot, resample=Image.BICUBIC, expand=True)
-        obj=obj.crop(obj.getbbox())
+        rot = np.random.randint(360)
+        img = img.rotate(rot, resample=Image.BICUBIC, expand=False)
 
-        # color transformation
-        brightness = nr.uniform(config["crop_brightness_augmentation"][0],
-                                config["crop_brightness_augmentation"][1])
-        enhancer = ImageEnhance.Brightness(obj)
-        obj = enhancer.enhance(brightness)
+        # random brightness
+        brtn = round(np.random.uniform(0.5, 1.5), 2)
+        img = ImageEnhance.Brightness(img).enhance(brtn)
 
-        # random translation
-        pos = (nr.randint(0, bg.width-obj.width), nr.randint(0, bg.height-obj.height))
+        # random position
+        # !position is the upper left corner of the crop in the picture!
+        pos = (np.random.randint(0, bg.width-img.width), np.random.randint(0, bg.height-img.height))
+        
+        bg.paste(img, pos, img)
 
-        bg.paste(obj, pos, obj.split()[-1])
+        # save image and csv
+        img_class_str = crop[:-5]
+        img_class = sphereo_classes.get(img_class_str)
 
-        # Prepare meta data
-        xmins.append(pos[0]/bg.width)
-        xmaxs.append((pos[0]+obj.width)/bg.width)
-        ymins.append(pos[1]/bg.height)
-        ymaxs.append((pos[1]+obj.height)/bg.height)
-        orientations.append(rot)
-        subclass = obj_meta['robot_type'] + '_' + obj_meta['identification']
-        subclasses_text.append(str.encode(subclass))
-        subclasses.append(label_map[subclass])
-        classes_text.append(str.encode(obj_meta['robot_type']))
-        classes.append(label_map[obj_meta['robot_type']])
+        image_name = str(i) +  ".png"
+        xmin = pos[0]
+        xmax = xmin+img.width
+        ymin = pos[1]
+        ymax = ymin+img.height
+        csv_rows.append([image_name, xmin, xmax, ymin, ymax, img_class_str, img_class, rot, scl, brtn])
+        bg.save(IMG_OUT_PATH+image_name)
 
-        # calculate height
-        camera_ground_dist = 310
-        if obj_meta['robot_type'] == "copter":
-            zero_width = 76
-            iframe_w.append(float(obj_meta["inner_frame_width"])*scl)
-            iframe_h.append(float(obj_meta["inner_frame_height"])*scl)
-            # TODO: check parameters first
-            # TODO: does local width makes sense?! (consider robot rotation)
-            #dist_to_cam.append(camera_ground_dist * zero_width / iframe_w[-1])
-        else:
-            dist_to_cam.append(0)
+    with open(IMG_OUT_PATH+"groundtruth.csv", 'w') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in csv_rows:
+            spamwriter.writerow(row)
 
-        # Save images
-        if export_arena:
-            bg.save(img_out_path+filename)
-        if export_crop:
-            out_var = config['sstage_out_var']
-            in_var = config['sstage_in_var']
-            obj_w = obj.width
-            obj_h = obj.height
-            img_crop = bg.crop((
-                pos[0]+custom_randint(-out_var*obj_w, +in_var*obj_w),
-                pos[1]+custom_randint(-out_var*obj_h, +in_var*obj_h),
-                pos[0]+obj_w-custom_randint(-out_var*obj_w, +in_var*obj_w),
-                pos[1]+obj_h-custom_randint(-out_var*obj_h, +in_var*obj_h)
-            ))
-            crop_name = filename.replace('.jpg','-{}.jpg'.format(j))
-            img_crop.save(img_out_path+crop_name)
-            with tf.gfile.GFile(img_out_path+crop_name, 'rb') as fid:
-                encoded_image_data = fid.read()
-            tf_example.append(tf.train.Example(features=tf.train.Features(feature={
-                'image/height': dataset_util.int64_feature(img_crop.height),
-                'image/width': dataset_util.int64_feature(img_crop.width),
-                'image/filename': dataset_util.bytes_feature(crop_name.encode('utf8')),
-                'image/source_id': dataset_util.bytes_feature(crop_name.encode('utf8')),
-                'image/encoded': dataset_util.bytes_feature(encoded_image_data),
-                'image/format': dataset_util.bytes_feature(b'jpg'),
-                'image/object/pose/orientation': dataset_util.float_list_feature([orientations[j]]),
-                'image/object/class/text': dataset_util.bytes_list_feature([classes_text[j]]),
-                'image/object/class/label': dataset_util.int64_list_feature([classes[j]]),
-                'image/object/subclass/text': dataset_util.bytes_list_feature([subclasses_text[j]]),
-                'image/object/subclass/label': dataset_util.int64_list_feature([subclasses[j]]),
-            })))
 
-    if export_arena:
-        with tf.gfile.GFile(img_out_path+filename, 'rb') as fid:
-            encoded_image_data = fid.read()
-        tf_example.append(tf.train.Example(features=tf.train.Features(feature={
-            'image/height': dataset_util.int64_feature(bg.height),
-            'image/width': dataset_util.int64_feature(bg.width),
-            'image/filename': dataset_util.bytes_feature(filename.encode('utf8')),
-            'image/source_id': dataset_util.bytes_feature(filename.encode('utf8')),
-            'image/encoded': dataset_util.bytes_feature(encoded_image_data),
-            'image/format': dataset_util.bytes_feature(b'jpg'),
-            'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
-            'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
-            'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
-            'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
-            'image/object/pose/orientation': dataset_util.float_list_feature(orientations),
-            'image/object/pose/iframe_w': dataset_util.float_list_feature(iframe_w),
-            'image/object/pose/iframe_h': dataset_util.float_list_feature(iframe_h),
-            'image/object/pose/dist_to_cam': dataset_util.float_list_feature(dist_to_cam),
-            'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
-            'image/object/class/label': dataset_util.int64_list_feature(classes),
-            'image/object/subclass/text': dataset_util.bytes_list_feature(subclasses_text),
-            'image/object/subclass/label': dataset_util.int64_list_feature(subclasses),
-        })))
-    return tf_example
+
+"""
+second stage: Identification CNN and Orientation CNN
+=> Identification CNN: hohe vielfalt an farben, rotations und helligkeit
+=> Orientation CNN: hohe vielfalt an rotations
+
+- uses all crops in CROP_PATH to create the training data
+- crops need to have an alpha channel and a round cut out for the spheros
+- image name must be like so YX.png
+    - where X=the number of the crop(one digit) and Y = the class in the 'classes' dictionary
+
+- random rgb noise backgrounds mit random brightness in Größe 35x35
+- die crops haben die größe 30x30
+- crops bekommen eine random rotation, random scale, random helligkeit und random position im background
+- die CSV datei enthält folgende spalten:
+	[image_name, img_class_str, img_class, rot, scl, brtn, pos[0], pos[1]])
+	image_name: vollständige Name der Bilddatei
+	img_class_str: ist der name der klasse (siehe 'sphereo_classes' in compositor.py)
+	img_class: ist die ID der klasse (siehe 'sphereo_classes' in compositor.py)
+	rot: rotationswinkel
+	scl: scalingfaktor
+	brtn: brightnessfaktor
+	pos[0] und pos[1]: position der crops im bg (ist der linke obere pixel vom crop im bg)
+
+TODO:
+    - create 5 different crops (e.g. each corner and the middle) per color for the training data set
+    - create 2 different crops (different from the training) per color for the test data set
+"""
+def secondstage(isTrainingData):
+    folder = "test/"
+    if isTrainingData:
+        folder = "training/"
+
+
+    OUT_PATH = "output/"
+    CROP_PATH = "crops/" + folder
+    #FIXHEIGHT = 30
+    #FIXWIDTH = 30
+
+    timestamp = "{:%Y%m%d_%H%M%S}".format(datetime.datetime.now())
+    timestamp = "X"
+    csv_rows = []
+    IMG_OUT_PATH = OUT_PATH+"SecondStage_"+timestamp+"/" + folder
+    makedirs(IMG_OUT_PATH, exist_ok=True)
+
+    CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
+    for crop in tqdm(CROPS):
+        for k in range(360*2):
+            img = Image.open(CROP_PATH + crop)
+            bg = creategaussiannoiseimg(SHAPE = (35,35,3))
+
+            # random rotation
+            rot = np.random.randint(360)
+            img = img.rotate(rot, resample=Image.BICUBIC, expand=False)
+
+            """
+            #cropping
+            w, h = img.size
+            left = (w - FIXWIDTH)/2
+            top = (h - FIXHEIGHT)/2
+            right = (w + FIXWIDTH)/2
+            bottom = (h + FIXHEIGHT)/2
+            img = img.crop((left, top, right, bottom))
+            """
+
+            # random scale
+            scl = round(np.random.uniform(0.9, 1.1), 2)
+            img = img.resize((int(scl*img.width),int(scl*img.height)), resample=Image.LANCZOS)
+
+            # random brightness
+            brtn = round(np.random.uniform(0.5, 1.5), 2)
+            img = ImageEnhance.Brightness(img).enhance(brtn)
+
+            # random position
+            # !position is the upper left corner of the crop in the picture!
+            pos = (np.random.randint(0, bg.width-img.width), np.random.randint(0, bg.height-img.height))
+            bg.paste(img, pos, img)
+
+            # save image and csv
+            img_class_str = crop[:-5]
+            img_class = sphereo_classes.get(img_class_str)
+            image_name = img_class_str + crop[-5] + "_r" + str(rot) + "_" + str(k) + ".png"
+            bg.save(IMG_OUT_PATH+image_name)
+            csv_rows.append([image_name, img_class_str, img_class, rot, scl, brtn, pos[0], pos[1]])
+
+
+    with open(IMG_OUT_PATH+"groundtruth.csv", 'w') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in csv_rows:
+            spamwriter.writerow(row)
+
+
+if __name__ == "__main__":
+    img = creategaussiannoiseimg(SHAPE = (500, 500, 3), brtn=1.0)
+    img.save("gaussian_noise.png")
+
+    #firststage(True)
+    #firststage(False)
+    secondstage(True)
+    secondstage(False)
