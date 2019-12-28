@@ -1,0 +1,12 @@
+#!/bin/bash
+
+TRAINING_PATH="${PWD}/training/"
+echo $TRAINING_PATH
+
+MODEL_PATH=$TRAINING_PATH/ssd_mobilenet2
+mkdir -p $MODEL_PATH
+cd $MODEL_PATH
+wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_coco_2018_03_29.tar.gz
+tar -xzvf ssd_mobilenet_v2_coco_2018_03_29.tar.gz
+mv ssd_mobilenet_v2_coco_2018_03_29/ base_model/
+rm ssd_mobilenet_v2_coco_2018_03_29.tar.gz
