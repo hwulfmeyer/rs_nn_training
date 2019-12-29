@@ -1,3 +1,13 @@
+"""
+- der compositor benutzt alle crops im Pfad CROP_PATH um die trainingsdaten zu erstellen
+    - zusätzlich zu den unterpfaden 'training' und 'test'
+- die crops müssen einen runden cut mit alpha channel besitzen (als PNG Datei)
+    => verhindert, dass das netz einfach die ränder der crops lernt
+- der Dateiname der crops muss so aussehen: YX.png
+    - Y = klasse aus 'sphereo_classes' dictionary X=nummerierung für die crops
+    - z.B. bright_blue0.png, bright_blue1.png, ...
+"""
+
 import csv
 import datetime
 from os import listdir, makedirs
@@ -39,6 +49,7 @@ def creategaussiannoiseimg(SHAPE = (1200, 1600, 3), brtn = None):
 
 
 """
+first stage: objection detection (to learn a bounding box for the objects)
 - random rgb noise backgrounds mit random brightness in Größe 300x300
 - auf die backgrounds werden die sphero crops superimposed
 - die crops haben eine random scale, rotation, brightness und position im background
@@ -117,13 +128,8 @@ def firststage(isTrainingData):
 
 """
 second stage: Identification CNN and Orientation CNN
-=> Identification CNN: hohe vielfalt an farben, rotations und helligkeit
-=> Orientation CNN: hohe vielfalt an rotations
-
-- uses all crops in CROP_PATH to create the training data
-- crops need to have an alpha channel and a round cut out for the spheros
-- image name must be like so YX.png
-    - where X=the number of the crop(one digit) and Y = the class in the 'classes' dictionary
+=> Identification CNN: hohe vielfalt an farben, rotationen und helligkeiten
+=> Orientation CNN: hohe vielfalt an rotationen mit unterschiedlichen farben und helligkeiten
 
 - random rgb noise backgrounds mit random brightness in Größe 35x35
 - die crops haben die größe 30x30
@@ -141,6 +147,7 @@ second stage: Identification CNN and Orientation CNN
 TODO:
     - create 5 different crops (e.g. each corner and the middle) per color for the training data set
     - create 2 different crops (different from the training) per color for the test data set
+    - add noise to crops?
 """
 def secondstage(isTrainingData):
     folder = "test/"
