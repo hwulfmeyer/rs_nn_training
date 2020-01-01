@@ -1,10 +1,10 @@
 """
 - der compositor benutzt alle crops im Pfad CROP_PATH um die trainingsdaten zu erstellen
-    - zusätzlich zu den unterpfaden 'training' und 'test'
+    - zusätzlich zu den unterpfaden 'training' und 'evaluation'
 - die crops müssen einen runden cut mit alpha channel besitzen (als PNG Datei)
     => verhindert, dass das netz einfach die ränder der crops lernt
 - der Dateiname der crops muss so aussehen: YX.png
-    - Y = klasse aus 'sphereo_classes' dictionary X=nummerierung für die crops
+    - Y = klasse aus 'sphero_classes' dictionary X=nummerierung für die crops
     - z.B. bright_blue0.png, bright_blue1.png, ...
 """
 
@@ -21,11 +21,13 @@ import decimal
 
 np.random.seed(146324)
 
+
 object_classes = {
     "sphero": 1
 }
 
-sphereo_classes = {
+
+sphero_classes = {
     "bright_blue": 1,
     "bright_red": 2,
     "bright_green": 3,
@@ -34,6 +36,7 @@ sphereo_classes = {
     "dark_green": 6,
     "dark_red": 7
 }
+
 
 def int64_feature(value):
   return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
@@ -53,6 +56,7 @@ def bytes_list_feature(value):
 
 def float_list_feature(value):
   return tf.train.Feature(float_list=tf.train.FloatList(value=value))
+
 
 """
 - SHAPE = (height, width, 3)
@@ -89,7 +93,7 @@ def generate_random_image(img, bg, rot=None):
     # !position is the upper left corner of the crop in the picture!
     pos = (np.random.randint(0, bg.width-img.width), np.random.randint(0, bg.height-img.height))
     bg.paste(img, pos, img)
-    return bg, img, pos
+    return bg, img, pos, brtn, rot, scl
 
 
 def writecsv(filename, csv_rows):
@@ -99,11 +103,13 @@ def writecsv(filename, csv_rows):
         for row in csv_rows:
             spamwriter.writerow(row)
 
+
 def writetfrecord(filename, tf_examples):
     writer = tf.io.TFRecordWriter(filename)
     for example in tf_examples:
         writer.write(example.SerializeToString())
     writer.close()
+
 
 """
 first stage: objection detection (to learn a bounding box for the objects)
@@ -111,22 +117,18 @@ first stage: objection detection (to learn a bounding box for the objects)
 - auf die backgrounds werden die sphero crops superimposed
 - die crops haben eine random scale, rotation, brightness und position im background
 - die CSV datei enthält folgende spalten:
-	[image_name, width, height, object_class, xmin, xmax, ymin, ymax, img_class_str, img_class, rot, scl, brtn]
+	[image_name, width, height, object_class_str, object_class, xmin, xmax, ymin, ymax]
 	image_name: vollständige Name der Bilddatei
     width, height: Weite und Höhe des bilds
-    object_class: objektklasse (z.b. 'sphero', 'copter', ...)
+    object_class, object_class_str: Id der objektklasse mit dem namen (siehe 'object_classes')
 	xmin, xmax, ymin, ymax: sind die koordinaten der bounding box
-	img_class_str: ist der name der klasse (siehe 'sphereo_classes' in compositor.py)
-	img_class: ist die ID der klasse (siehe 'sphereo_classes' in compositor.py)
-	rot: rotationswinkel
-	scl: scalingfaktor
-	brtn: brightnessfaktor
+
 TODO:
     - mehrere objekte in einem bild ?
 """
 def firststage(isTrainingData):
-    TRAIN_SIZE = 300
-    TEST_SIZE = 100
+    TRAIN_SIZE = 30000
+    TEST_SIZE = 10
     BGHEIGHT = 300
     BGWIDTH = 300
     FOLDER = "evaluation"
@@ -145,13 +147,13 @@ def firststage(isTrainingData):
     CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
     csv_rows = []
     tf_examples = []
-
+    tfrec_writer = tf.io.TFRecordWriter(TFREC_OUT_PATH+".tfrecords")
     for i in tqdm(range(SIZE)):
         bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
         crop = np.random.choice(CROPS)
         img = Image.open(CROP_PATH + crop)
 
-        bg, img, pos = generate_random_image(img, bg)
+        bg, img, pos, brtn, rot, scl = generate_random_image(img, bg)
 
         obj_class_str = "sphero"
         obj_class = object_classes.get(obj_class_str)
@@ -161,7 +163,7 @@ def firststage(isTrainingData):
         xmax = xmin+img.width
         ymin = pos[1]
         ymax = ymin+img.height
-        csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, xmin, xmax, ymin, ymax])
+        csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, xmin, xmax, ymin, ymax, brtn, rot, scl])
         tf_example = tf.train.Example(features=tf.train.Features(feature={      
             'image/encoded': bytes_feature(bg.tobytes()),
             'image/format': bytes_feature(b'png'),
@@ -177,10 +179,18 @@ def firststage(isTrainingData):
             'image/object/bbox/ymax': int64_feature(ymax),
         }))
         tf_examples.append(tf_example)
-        bg.save(IMG_OUT_PATH+image_name)
+        #bg.save(IMG_OUT_PATH+image_name)
+        if i % 500:
+            # prevents the RAM from getting full
+            for example in tf_examples:
+                tfrec_writer.write(example.SerializeToString())
+            tf_examples = []
 
+    for example in tf_examples:
+        tfrec_writer.write(example.SerializeToString())
+    tfrec_writer.close()
+    tf_examples = []
     writecsv(IMG_OUT_PATH+"labels.csv", csv_rows)
-    writetfrecord(TFREC_OUT_PATH+".tfrecords", tf_examples)
 
 
 
@@ -194,21 +204,16 @@ second stage: Identification CNN and Orientation CNN
 - jeder crop wird zwei mal mit jedem winkel erstellt
 - zusätzlich erhalten die crops eine random scale, random helligkeit und random position im background
 - die CSV datei enthält folgende spalten:
-	[image_name, width, heigth, object_class, img_class_str, img_class, rot, scl, brtn, pos[0], pos[1]])
+	[image_name, width, heigth, object_class, img_class_str, img_class, rot])
 	image_name: vollständige Name der Bilddatei
     width, height: Weite und Höhe des bilds
-    object_class: objektklasse (z.b. 'sphero')
-	img_class_str: ist der name der klasse (siehe 'sphereo_classes' in compositor.py)
-	img_class: ist die ID der klasse (siehe 'sphereo_classes' in compositor.py)
+    object_class, object_class_str: Id der objektklasse mit dem namen (siehe 'object_classes')
+	img_class, img_class_str: ID der klasse und der name der klasse (siehe 'sphero_classes' in compositor.py)
 	rot: rotationswinkel
-	scl: scalingfaktor
-	brtn: brightnessfaktor
-	pos[0] und pos[1]: position der crops im bg (ist der linke obere pixel vom crop im bg)
 
 TODO:
     - create 5 different crops (e.g. each corner and the middle) per color for the training data set
     - create 2 different crops (different from the training) per color for the test data set
-    - add noise to crops?
 """
 def secondstage(isTrainingData):
 
@@ -235,16 +240,16 @@ def secondstage(isTrainingData):
                 img = Image.open(CROP_PATH + crop)
                 bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
 
-                bg, img, pos = generate_random_image(img, bg, rot)
+                bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, rot)
 
                 # save image and csv
                 obj_class_str = "sphero"
                 obj_class = object_classes.get(obj_class_str)
                 img_class_str = crop[:-5]
-                img_class = sphereo_classes.get(img_class_str)
+                img_class = sphero_classes.get(img_class_str)
                 image_name = img_class_str + crop[-5] + "_r" + str(rot) + "_" + str(k) + ".png"
                 bg.save(IMG_OUT_PATH+image_name)
-                csv_rows.append([image_name, bg.width, bg.height, img_class_str, img_class, rot, pos[0], pos[1]])
+                csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, img_class_str, img_class, rot])
 
                 tf_example = tf.train.Example(features=tf.train.Features(feature={      
                     'image/encoded': bytes_feature(bg.tobytes()),
@@ -272,5 +277,5 @@ if __name__ == "__main__":
 
     firststage(True)
     firststage(False)
-    secondstage(True)
-    secondstage(False)
+    #secondstage(True)
+    #secondstage(False)
