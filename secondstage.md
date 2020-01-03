@@ -1,6 +1,6 @@
-#Second Stage
+# Second Stage
 
-##to do 
+## to do 
 - RecordInspector -> Anzahl Daten pro Grad 
 - unterschiede experimenttypen
 - bin vs reg
@@ -12,7 +12,7 @@
 - cropping?
 - PredictionInspection deprecated
 
-##Vorbereitung
+## Vorbereitung
 
 Packages:
 - tqdm
@@ -46,7 +46,7 @@ sonst fehlt string_int_label_map_pb2 in object_detection
 | second_stage_utils | keras custom objects, load images |
 | TFRecordInspectorSStage | Anzahl Daten pro Klasse |
 
-##Training
+## Training
 
 SecondStage.py -e "exp_name"+"type"
 	"exp_name" = Name des Experiments aus exp_def
@@ -57,7 +57,7 @@ SecondStage.py -e "exp_name"+"type"
 
 Bsp.: -e sstage_default_sphero_cat
 
-##Testen
+## Testen
 
 PredicitonInspection.py
 
