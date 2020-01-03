@@ -1,0 +1,9 @@
+item {
+  id: 1
+  name: 'bright_blue'
+}
+
+item {
+  id: 2
+  name: 'bright_red'
+}

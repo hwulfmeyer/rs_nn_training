@@ -7,7 +7,7 @@ import io
 from keras import backend as K
 from keras.utils import np_utils
 
-from CNNRobotLocalisation.Utils.file_utils import *
+from rs_nn_training.Utils.file_utils import *
 
 # ANGLES_PER_BIN = 4
 # NUM_ORI_BINS = 90 # 360 / 4
@@ -44,14 +44,16 @@ def np_angle_diff2(y_true, y_pred):
 
 def angle_mae(y_true, y_pred):
     return K.mean(K.abs(angle_diff2(y_true, y_pred)), axis=-1)
+
 def angle_mse(y_true, y_pred):
     return K.mean(K.square(angle_diff2(y_true, y_pred)), axis=-1)
+
 def angle_bin_error(y_true, y_pred):
     diff = angle_diff2(K.argmax(y_true)*ANGLES_PER_BIN,
                        K.argmax(y_pred)*ANGLES_PER_BIN)
     return K.mean(K.cast(K.abs(diff), K.floatx()))
 
-def data_to_keras(X,Y,Z, num_classes, size=128):
+def data_to_keras(X,Y,Z, num_classes, size=35):
     X = [np.asarray(e) for e in X]
 
     X = np.asarray(X, dtype="uint8")
@@ -67,25 +69,27 @@ def angle_to_bin(Z):
     Z = np.mod(Z, 360)
     return np_utils.to_categorical(np.floor(Z/ANGLES_PER_BIN),NUM_ORI_BINS)
 
-def tf_record_load_crops(files,num_per_record=-1,size=128):
+def tf_record_load_crops(files,num_per_record=-1,size=35):
     crops, classes, orientations = [],[],[]
     debug_infos = []
     for f in files:
-        print(f)
         record_iterator = tf.python_io.tf_record_iterator(f)
         for l, string_record in enumerate(record_iterator):
             if num_per_record!=-1 and l > num_per_record: break
             example = tf.train.Example()
             example.ParseFromString(string_record)
             feats = example.features
-            img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
-            img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
-            img = Image.open(io.BytesIO(img_enc))
-
-            assert len(feats.feature["image/object/class/text"].bytes_list.value) == 1
-            class_text = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf8')
+            img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf-8')
+            img_enc = (feats.feature['image/encoded'].bytes_list.value[0]) #.decode('utf-8')
+            #img = Image.open(io.BytesIO(img_enc))
+            img = Image.open(open(img_enc, "rb"))
+            #assert len(feats.feature["image/object/class/text"].bytes_list.value) == 1
+            class_text = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf-8') 
             class_label = feats.feature["image/object/subclass/label"].int64_list.value[0]
-            orientation = feats.feature["image/object/pose/orientation"].float_list.value[0]
+            orientation = feats.feature["image/object/pose/orientation"].int64_list.value[0]
+            print(class_text)
+            print(class_label)
+            print(orientation)
 
             crops.append(make_square(img,size))
             classes.append(class_label)
@@ -97,6 +101,8 @@ def tf_record_load_crops(files,num_per_record=-1,size=128):
 
     assert len(crops) == len(classes) and len(crops) == len(orientations)
     print("Loaded {} crops from {}".format(len(crops),files))
+
+    print(len(classes))
 
     return crops, classes, orientations, debug_infos
 
@@ -110,7 +116,7 @@ def custom_randint(min, max):
 def tf_record_extract_crops(files, num_derivations,
                             out_var, in_var,
                             num_per_record=-1,
-                            size=30,
+                            size=35,
                             class_filters=None):
     crops, classes, orientations = [],[],[]
     debug_infos = []
@@ -122,33 +128,39 @@ def tf_record_extract_crops(files, num_derivations,
             example = tf.train.Example()
             example.ParseFromString(string_record)
             feats = example.features
-            width  = feats.feature["image/width"].int64_list.value[0]
-            height = feats.feature["image/height"].int64_list.value[0]
+            #width  = feats.feature["image/width"].int64_list.value[0]
+            #height = feats.feature["image/height"].int64_list.value[0]
+            width = 30
+            height = 30
             img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
-            img = Image.open(io.BytesIO(img_enc))
+            #img = Image.open(io.BytesIO(img_enc))
+            img = Image.open(open(img_enc, "rb"))
 
             for i,_ in enumerate(feats.feature["image/object/class/text"].bytes_list.value):
-                #print(feats.feature.keys())
                 class_text = (feats.feature["image/object/subclass/text"].bytes_list.value[i]).decode('utf8')
                 if not (class_filters == None or any(m in class_text for m in class_filters)):
                     continue
                 class_label = feats.feature["image/object/subclass/label"].int64_list.value[i]
-                orientation = feats.feature["image/object/pose/orientation"].float_list.value[i]
+                orientation = feats.feature["image/object/pose/orientation"].int64_list.value[i]
+                """
                 xmin = round(feats.feature["image/object/bbox/xmin"].float_list.value[i] * width)
                 xmax = round(feats.feature["image/object/bbox/xmax"].float_list.value[i] * width)
                 ymin = round(feats.feature["image/object/bbox/ymin"].float_list.value[i] * height)
                 ymax = round(feats.feature["image/object/bbox/ymax"].float_list.value[i] * height)
                 obj_w = xmax - xmin
                 obj_h = ymax - ymin
+                """
                 for j in range(num_derivations):
+                    """                    
                     img_crop = img.crop((
                         xmin+custom_randint(-out_var*obj_w, +in_var*obj_w),
                         ymin+custom_randint(-out_var*obj_h, +in_var*obj_h),
                         xmax-custom_randint(-out_var*obj_w, +in_var*obj_w),
                         ymax-custom_randint(-out_var*obj_h, +in_var*obj_h)
                     ))
-                    crops.append(make_square(img_crop,size))
+                    """
+                    crops.append(make_square(img,size))
                     classes.append(class_label)
                     orientations.append(orientation)
                     debug_infos.append({
@@ -156,6 +168,12 @@ def tf_record_extract_crops(files, num_derivations,
                         'src_record': f,
                         'crop_num': i*num_derivations + j,
                     })
+            img.close()
+
+    print("******************************************************************************")
+    print(len(crops))
+    print(len(classes))
+    print(len(orientations))
 
     return crops, classes, orientations, debug_infos
 
