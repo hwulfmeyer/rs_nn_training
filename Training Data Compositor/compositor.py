@@ -10,14 +10,16 @@
 
 import csv
 import datetime
+import decimal
+import io
 from os import listdir, makedirs
 from os.path import isfile, join
-import io
-import tensorflow as tf
+
 import numpy as np
+import PIL
+import tensorflow as tf
 from PIL import Image, ImageEnhance
 from tqdm import tqdm
-import decimal
 
 np.random.seed(146324)
 
@@ -31,10 +33,10 @@ sphero_classes = {
     "bright_blue": 1,
     "bright_red": 2,
     "bright_green": 3,
-    "bright_white": 4,
-    "dark_blue": 5,
-    "dark_green": 6,
-    "dark_red": 7
+    "dark_blue": 4,
+    "dark_green": 5,
+    "dark_red": 6,
+    "bright_white": 7
 }
 
 
@@ -75,9 +77,9 @@ def generate_gaussiannoiseimg(SHAPE = (1200, 1600, 3), brtn = None):
     return img
 
 
-def generate_random_image(img, bg, rot=None):
+def generate_random_image(img, bg, edge_distance=0, rot=None):
     # random scale
-    scl = round(np.random.uniform(0.9, 1.1), 2)
+    scl = round(np.random.uniform(0.95, 1.05), 2)
     img = img.resize((int(scl*img.width),int(scl*img.height)), resample=Image.LANCZOS)
 
     # random rotation
@@ -86,12 +88,14 @@ def generate_random_image(img, bg, rot=None):
     img = img.rotate(rot, resample=Image.BICUBIC, expand=False)
 
     # random brightness
-    brtn = round(np.random.uniform(0.5, 1.5), 2)
+    brtn = round(np.random.uniform(0.9, 1.1), 2)
     img = ImageEnhance.Brightness(img).enhance(brtn)
 
     # random position
     # !position is the upper left corner of the crop in the picture!
-    pos = (np.random.randint(0, bg.width-img.width), np.random.randint(0, bg.height-img.height))
+    assert bg.width-img.width - edge_distance >= 0, "Abstand zum Rand ist zu hoch eingestellt!"
+    assert bg.height-img.height - edge_distance >= 0, "Abstand zum Rand ist zu hoch eingestellt!"
+    pos = (np.random.randint(edge_distance, bg.width-img.width-edge_distance), np.random.randint(edge_distance, bg.height-img.height-edge_distance))
     bg.paste(img, pos, img)
     return bg, img, pos, brtn, rot, scl
 
@@ -126,9 +130,9 @@ first stage: objection detection (to learn a bounding box for the objects)
 TODO:
     - mehrere objekte in einem bild ?
 """
-def firststage(isTrainingData):
-    TRAIN_SIZE = 30000
-    TEST_SIZE = 10
+def firststage(isTrainingData, saveImages=False):
+    TRAIN_SIZE = 5000
+    TEST_SIZE = 1500
     BGHEIGHT = 300
     BGWIDTH = 300
     FOLDER = "evaluation"
@@ -152,8 +156,9 @@ def firststage(isTrainingData):
         bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
         crop = np.random.choice(CROPS)
         img = Image.open(CROP_PATH + crop)
-
-        bg, img, pos, brtn, rot, scl = generate_random_image(img, bg)
+        if not isTrainingData:
+            img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+        bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, edge_distance=5)
 
         obj_class_str = "sphero"
         obj_class = object_classes.get(obj_class_str)
@@ -179,7 +184,8 @@ def firststage(isTrainingData):
             'image/object/bbox/ymax': int64_feature(ymax),
         }))
         tf_examples.append(tf_example)
-        #bg.save(IMG_OUT_PATH+image_name)
+        if saveImages:
+            bg.save(IMG_OUT_PATH+image_name)
         if i % 500:
             # prevents the RAM from getting full
             for example in tf_examples:
@@ -215,7 +221,7 @@ TODO:
     - create 5 different crops (e.g. each corner and the middle) per color for the training data set
     - create 2 different crops (different from the training) per color for the test data set
 """
-def secondstage(isTrainingData):
+def secondstage(isTrainingData, saveImages=False):
 
     BGHEIGHT = 35
     BGWIDTH = 35
@@ -235,12 +241,15 @@ def secondstage(isTrainingData):
     tf_examples = []
 
     for crop in tqdm(CROPS):
+        print(crop)
         for rot in range(360):
-            for k in range (2):
+            for k in range(15) if isTrainingData else range(2):
                 img = Image.open(CROP_PATH + crop)
-                bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
+                if not isTrainingData:
+                    img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+                bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3), brtn=0.2)
 
-                bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, rot)
+                bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, 3, rot)
 
                 # save image and csv
                 obj_class_str = "sphero"
@@ -248,7 +257,8 @@ def secondstage(isTrainingData):
                 img_class_str = crop[:-5]
                 img_class = sphero_classes.get(img_class_str)
                 image_name = img_class_str + crop[-5] + "_r" + str(rot) + "_" + str(k) + ".png"
-                bg.save(IMG_OUT_PATH+image_name)
+                if saveImages:
+                    bg.save(IMG_OUT_PATH+image_name)
                 csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, img_class_str, img_class, rot])
 
                 tf_example = tf.train.Example(features=tf.train.Features(feature={      
@@ -272,10 +282,10 @@ def secondstage(isTrainingData):
 
 
 if __name__ == "__main__":
-    img = generate_gaussiannoiseimg(SHAPE = (500, 500, 3), brtn=1.0)
-    img.save("gaussian_noise.png")
+    #img = generate_gaussiannoiseimg(SHAPE = (500, 500, 3), brtn=1.0)
+    #img.save("gaussian_noise.png")
 
-    firststage(True)
-    firststage(False)
-    #secondstage(True)
-    #secondstage(False)
+    #firststage(True)
+    #firststage(False)
+    secondstage(True, False)
+    #secondstage(False, True)
