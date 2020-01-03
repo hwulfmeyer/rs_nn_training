@@ -22,7 +22,8 @@ import sys
 sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/")
 
 from object_detection.utils import label_map_util
-from rs_nn_training.old.DataPreprocessing.experiment_definitions import *
+#from rs_nn_training.old.DataPreprocessing.experiment_definitions import *
+from rs_nn_training.SecondStage.exp_def import *
 from rs_nn_training.Utils.file_utils import *
 from rs_nn_training.SecondStage.second_stage_utils import *
 
@@ -30,10 +31,10 @@ from rs_nn_training.SecondStage.second_stage_utils import *
 
 GPU = False
 
-LOG_PATH = "/home/josi/OvGU/Rolling Swarm/rs_nn_training/training/second_stage/"
-LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/old/LabelMaps/robot_label_map.pbtxt'
-TRAIN_DIR = "/home/josi/OvGU/Rolling Swarm/rs_nn_training/data/"
-EVAL_DIR = "/home/josi/OvGU/Rolling Swarm/rs_nn_training/data/Validation/secondstage110balance4/"
+LOG_PATH = "/home/josi/OvGU/Rolling Swarm/output/second_stage/"
+LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/label_map.pbtxt'
+TRAIN_DIR = "/home/josi/OvGU/Rolling Swarm/data/train/"
+EVAL_DIR = "/home/josi/OvGU/Rolling Swarm/data/test"
 
 BATCH_SIZE = 32
 
@@ -56,14 +57,17 @@ def train(train_record, conf, types, out, rep=1):
     X,Y,Z,_ = tf_record_load_crops([train_record])
     X_train, Y_train, Z_train = data_to_keras(X,Y,Z,num_classes,conf['img_size'])
     Z2_train = angle_to_bin(Z_train)
+    print("´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´")
     print(Y_train.shape)
     print(num_classes)
     print(Z2_train.shape)
     print(NUM_ORI_BINS)
+    print("´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´")
 
     eval_records = get_recursive_file_list(EVAL_DIR, file_matchers=types)
 
-    X,Y,Z,_ = tf_record_extract_crops(eval_records, 1, 0.0, 0.0, class_filters=types)
+    #X,Y,Z,_ = tf_record_extract_crops(eval_records, 1, 0.0, 0.0, class_filters=types)
+    X,Y,Z,_ = tf_record_extract_crops(eval_records, 1, 0.0, 0.0, class_filters="sphero")
     X_val, Y_val, Z_val = data_to_keras(X,Y,Z,num_classes,conf['img_size'])
     Z2_val = angle_to_bin(Z_val)
     assert len(X_val) > 0 and len(Y_val) > 0 and len(Z_val) > 0, \
@@ -72,8 +76,8 @@ def train(train_record, conf, types, out, rep=1):
                                                       weights = "imagenet",
                                                       include_top=False,
                                                       input_shape = (
-                                                        conf['img_size'],
-                                                        conf['img_size'],
+                                                      conf['img_size'],
+                                                      conf['img_size'],
                                                         3
                                                       ))
     shape = (1, 1, int(1024 * conf['alpha']))
@@ -131,7 +135,6 @@ def train(train_record, conf, types, out, rep=1):
         callbacks=[summary,checkpoint],
         shuffle=True
     )
-    print("**********************************************************************************")
     model_final.save(log_path+"model-final.h5")
     print("Finished training for {}_{}".format(conf['name'],t))
 
@@ -150,7 +153,6 @@ for or_conf in tqdm(exp):
     for r in range(or_conf['repetions']): 
         #train_records = get_recursive_file_list(TRAIN_DIR,file_matchers=[or_conf['dataset']])
         train_records = get_recursive_file_list(TRAIN_DIR)
-        print("----------------------") 
         for t in or_conf['types']:
             for out in ['_cat','_reg','_bin','']:
                 conf = deepcopy(or_conf)
@@ -179,9 +181,7 @@ for or_conf in tqdm(exp):
                 #if not re.match(args.exp_name, train_instance_name):
                 if not re.match(str(args.exp_name), train_instance_name): 
                     #print('Skip '+train_instance_name)
-                    continue
-                print(train_records)
-                print(t)                
+                    continue            
                 record_for_type = [e for e in train_records if t in e]
                 print("record_for_type: ", len(record_for_type))
                 assert len(record_for_type) == 1, \

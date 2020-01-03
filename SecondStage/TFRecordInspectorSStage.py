@@ -10,8 +10,8 @@ from pprint import pprint
 
 ################################################################################
 
-FILE = "/home/josi/OvGU/Rolling Swarm/rs_nn_training/data/test/sphero_data.tfrecords"
-OUT_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/TFRecordInspectorSStage/'
+FILE = "/home/josi/OvGU/Rolling Swarm/data/test/sphero_data.tfrecords"
+OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inspector'
 TIMESTAMP = "{:%Y-%m-%d-%H-%M-%S}".format(datetime.now())
 OUT_PATH += TIMESTAMP+'/'
 
@@ -33,7 +33,8 @@ for e_i, string_record in enumerate(record_iterator):
         statistics[class_text] +=1
 
     os.makedirs(OUT_PATH + class_text, exist_ok=True)
-    img = Image.open(io.BytesIO(img_enc))
+    img = Image.open(open(img_enc, "rb"))    
+    #img = Image.open(io.BytesIO(img_enc))
     img.save(OUT_PATH + class_text + '/img{}.png'.format(e_i))
 
 pprint(statistics)

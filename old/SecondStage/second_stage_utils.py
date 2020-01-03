@@ -110,7 +110,7 @@ def custom_randint(min, max):
 def tf_record_extract_crops(files, num_derivations,
                             out_var, in_var,
                             num_per_record=-1,
-                            size=128,
+                            size=30,
                             class_filters=None):
     crops, classes, orientations = [],[],[]
     debug_infos = []
