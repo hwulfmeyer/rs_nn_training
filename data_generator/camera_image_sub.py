@@ -13,7 +13,7 @@ def image_callback(data):
         image = bridge.imgmsg_to_cv2(data, "passthrough")
     except CvBridgeError as e:
         print(e)
-    path = "images/{}.jpg".format(int(time.time()))
+    path = "images/{}_{}.jpg".format(int(time.time()), "dg")
     if  time.time() - last_time > 3:
         last_time = time.time()
     	cv2.imwrite(path, image)
