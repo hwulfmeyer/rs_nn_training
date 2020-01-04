@@ -69,6 +69,20 @@ def angle_to_bin(Z):
     Z = np.mod(Z, 360)
     return np_utils.to_categorical(np.floor(Z/ANGLES_PER_BIN),NUM_ORI_BINS)
 
+"""
+img_enc = (feats.feature['image/encoded'].bytes_list.value[0]).decode('utf-8')
+img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf-8')
+filename = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf-8')
+source_id = (feats.feature['image/source_id'].bytes_list.value[0]).decode('utf-8')
+width = feats.feature['image/width'].int64_list.value[0]
+height = feats.feature['image/height'].int64_list.value[0]
+class = (feats.feature['image/object/class/text'].bytes_list.value[0]).decode('utf-8')
+class_label = feats.feature['image/object/class/label'].int64_list.value[0]
+color = (feats.feature['image/object/subclass/text'].bytes_list.value[0]).decode('utf-8')
+color_id = feats.feature['image/object/subclass/label'].int64_list.value[0]
+orientation = feats.feature['image/object/pose/orientation'].int64_list.value[0]
+"""
+
 def tf_record_load_crops(files,num_per_record=-1,size=35):
     crops, classes, orientations = [],[],[]
     debug_infos = []
@@ -79,20 +93,20 @@ def tf_record_load_crops(files,num_per_record=-1,size=35):
             example = tf.train.Example()
             example.ParseFromString(string_record)
             feats = example.features
+
+            img_enc = (feats.feature['image/encoded'].bytes_list.value[0])#.decode('utf-8')
+
             img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf-8')
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0]) #.decode('utf-8')
-            #img = Image.open(io.BytesIO(img_enc))
-            img = Image.open(open(img_enc, "rb"))
-            #assert len(feats.feature["image/object/class/text"].bytes_list.value) == 1
-            class_text = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf-8') 
-            class_label = feats.feature["image/object/subclass/label"].int64_list.value[0]
+            width = feats.feature['image/width'].int64_list.value[0]
+            height = feats.feature['image/height'].int64_list.value[0]
+            img = Image.frombytes('RGB', (height, width), img_enc)
+            color = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf-8') 
+            color_id = feats.feature["image/object/subclass/label"].int64_list.value[0]
             orientation = feats.feature["image/object/pose/orientation"].int64_list.value[0]
-            print(class_text)
-            print(class_label)
-            print(orientation)
 
             crops.append(make_square(img,size))
-            classes.append(class_label)
+            classes.append(color_id)
             orientations.append(orientation)
             debug_infos.append({
                 'filename': img_name,
@@ -135,7 +149,8 @@ def tf_record_extract_crops(files, num_derivations,
             img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
             #img = Image.open(io.BytesIO(img_enc))
-            img = Image.open(open(img_enc, "rb"))
+            #img = Image.open(open(img_enc, "rb"))
+            img = Image.frombytes('RGB', (height, width), img_enc)
 
             for i,_ in enumerate(feats.feature["image/object/class/text"].bytes_list.value):
                 class_text = (feats.feature["image/object/subclass/text"].bytes_list.value[i]).decode('utf8')
@@ -143,37 +158,22 @@ def tf_record_extract_crops(files, num_derivations,
                     continue
                 class_label = feats.feature["image/object/subclass/label"].int64_list.value[i]
                 orientation = feats.feature["image/object/pose/orientation"].int64_list.value[i]
-                """
-                xmin = round(feats.feature["image/object/bbox/xmin"].float_list.value[i] * width)
-                xmax = round(feats.feature["image/object/bbox/xmax"].float_list.value[i] * width)
-                ymin = round(feats.feature["image/object/bbox/ymin"].float_list.value[i] * height)
-                ymax = round(feats.feature["image/object/bbox/ymax"].float_list.value[i] * height)
-                obj_w = xmax - xmin
-                obj_h = ymax - ymin
-                """
-                for j in range(num_derivations):
-                    """                    
-                    img_crop = img.crop((
-                        xmin+custom_randint(-out_var*obj_w, +in_var*obj_w),
-                        ymin+custom_randint(-out_var*obj_h, +in_var*obj_h),
-                        xmax-custom_randint(-out_var*obj_w, +in_var*obj_w),
-                        ymax-custom_randint(-out_var*obj_h, +in_var*obj_h)
-                    ))
-                    """
-                    crops.append(make_square(img,size))
-                    classes.append(class_label)
-                    orientations.append(orientation)
-                    debug_infos.append({
-                        'filename': img_name,
-                        'src_record': f,
-                        'crop_num': i*num_derivations + j,
-                    })
-            img.close()
+                width = feats.feature['image/width'].int64_list.value[0]
+                height = feats.feature['image/height'].int64_list.value[0]                
+ 
+                img_resized = img;
+                if (width != 35 or height != 35): 
+                    img_resized = img.resize((35,35), Image.BICUBIC)
 
-    print("******************************************************************************")
-    print(len(crops))
-    print(len(classes))
-    print(len(orientations))
+                crops.append(make_square(img_resized,size))
+                classes.append(class_label)
+                orientations.append(orientation)
+                debug_infos.append({
+                    'filename': img_name,
+                    'src_record': f,
+                    'crop_num': i*num_derivations,
+                })
+            img.close()
 
     return crops, classes, orientations, debug_infos
 

@@ -7,3 +7,28 @@ item {
   id: 2
   name: 'bright_red'
 }
+
+item {
+  id: 3
+  name: 'bright_green'
+}
+
+item {
+  id: 4
+  name: 'bright_white'
+}
+
+item {
+  id: 5
+  name: 'dark_blue'
+}
+
+item {
+  id: 6
+  name: 'dark_green'
+}
+
+item {
+  id: 7
+  name: 'dark_red'
+}

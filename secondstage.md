@@ -12,6 +12,7 @@
 - cropping?
 - PredictionInspection deprecated
 
+
 ## Vorbereitung
 
 Packages:
@@ -21,20 +22,23 @@ Packages:
 - sklearn (pip3 install scipy, pip3 install sklearn)
 - pandas
 
-Directory:
-dir 
-|-- object_detection (tensorflow)
-|-- rs_nn_training
-|   |-- Second Stage
-|-- data
-|   |-- train (Trainingsdatensatz)
-|   |-- test (Testdatensatz)
-|-- output
-|   |-- inference
-|   |-- second_stage (h5 Modelle)
+
+Directory:  
+dir  
+|-- object_detection (tensorflow)  
+|-- rs_nn_training  
+|-- |-- Second Stage  
+|-- data  
+|-- |-- train (Trainingsdatensatz)  
+|-- |-- test (Testdatensatz)  
+|-- output  
+|-- |-- inference  
+|-- |-- second_stage (h5 Modelle)
+
 		
 [Manual protobuf-compiler installation and usage] (https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md#manual-protobuf-compiler-installation-and-usage)
 sonst fehlt string_int_label_map_pb2 in object_detection
+
 
 | file | description |
 | ---- | -------------- |
@@ -46,16 +50,18 @@ sonst fehlt string_int_label_map_pb2 in object_detection
 | second_stage_utils | keras custom objects, load images |
 | TFRecordInspectorSStage | Anzahl Daten pro Klasse |
 
+
 ## Training
 
-SecondStage.py -e "exp_name"+"type"
-	"exp_name" = Name des Experiments aus exp_def
-	"type" = reg | cat | bin
-	reg = orientation
-	cat = Klassifikation Farben
-	bin = ?
+SecondStage.py -e "exp_name"+"type"  
+	"exp_name" = Name des Experiments aus exp_def  
+	"type" = reg | cat | bin  
+	reg = orientation  
+	cat = Klassifikation Farben  
+	bin = ?  
 
 Bsp.: -e sstage_default_sphero_cat
+
 
 ## Testen
 

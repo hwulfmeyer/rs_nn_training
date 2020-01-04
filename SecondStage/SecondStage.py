@@ -33,7 +33,7 @@ GPU = False
 
 LOG_PATH = "/home/josi/OvGU/Rolling Swarm/output/second_stage/"
 LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/label_map.pbtxt'
-TRAIN_DIR = "/home/josi/OvGU/Rolling Swarm/data/train/"
+TRAIN_DIR = "/home/josi/OvGU/Rolling Swarm/data/train"
 EVAL_DIR = "/home/josi/OvGU/Rolling Swarm/data/test"
 
 BATCH_SIZE = 32
