@@ -10,31 +10,32 @@ from pprint import pprint
 
 ################################################################################
 
-FILE = "/home/josi/OvGU/Rolling Swarm/data/test/sphero_data.tfrecords"
-OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inspector'
-TIMESTAMP = "{:%Y-%m-%d-%H-%M-%S}".format(datetime.now())
-OUT_PATH += TIMESTAMP+'/'
-
+FILE = "training_rot15_32400.tfrecords"
+OUT_PATH = "output/inspector_"
+TIMESTAMP = "X" #"{:%Y-%m-%d-%H-%M-%S}".format(datetime.now())
+OUT_PATH += TIMESTAMP+"/"
+os.makedirs(OUT_PATH, exist_ok=True)
 #####################################################################
 
-record_iterator = tf.python_io.tf_record_iterator(FILE)
+raw_dataset = tf.data.TFRecordDataset(FILE)
 
 statistics = {}
-for e_i, string_record in enumerate(record_iterator):
+for raw_record in raw_dataset:
     example = tf.train.Example()
-    example.ParseFromString(string_record)
+    example.ParseFromString(raw_record.numpy())
     feats = example.features
     img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
-    class_text = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf8')
+    img_width = feats.feature['image/width'].int64_list.value[0]
+    img_height = feats.feature['image/height'].int64_list.value[0]
+    filename = class_text = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
+    class_text = (feats.feature['image/object/subclass/text'].bytes_list.value[0]).decode('utf8')
 
     if class_text not in statistics:
         statistics[class_text] = 1
     else:
         statistics[class_text] +=1
 
-    os.makedirs(OUT_PATH + class_text, exist_ok=True)
-    img = Image.open(open(img_enc, "rb"))    
-    #img = Image.open(io.BytesIO(img_enc))
-    img.save(OUT_PATH + class_text + '/img{}.png'.format(e_i))
+    img = Image.frombytes('RGB', (img_height, img_width), img_enc)
+    img.save(OUT_PATH + '/{}'.format(filename))
 
 pprint(statistics)
