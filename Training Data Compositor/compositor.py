@@ -12,7 +12,6 @@ import csv
 import datetime
 import decimal
 import io
-import os
 from os import listdir, makedirs
 from os.path import isfile, join
 
@@ -156,14 +155,17 @@ def firststage(isTrainingData, saveImages=False):
     for i in tqdm(range(SIZE)):
         bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
         crop = np.random.choice(CROPS)
-        img = Image.open(CROP_PATH + crop)
+        img = Image.open(CROP_PATH + crop, 'r')
         if not isTrainingData:
             img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
         bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, edge_distance=5)
 
         obj_class_str = "sphero"
         obj_class = object_classes.get(obj_class_str)
-
+        
+        with io.BytesIO() as output:
+            bg.save(output, format="PNG")
+            io_image = output.getvalue()
         image_name = str(i) +  ".png"
         xmin = pos[0]
         xmax = xmin+img.width
@@ -171,7 +173,7 @@ def firststage(isTrainingData, saveImages=False):
         ymax = ymin+img.height
         csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, xmin, xmax, ymin, ymax])
         tf_example = tf.train.Example(features=tf.train.Features(feature={      
-            'image/encoded': bytes_feature(bg.tobytes()),
+            'image/encoded': bytes_feature(io_image),
             'image/format': bytes_feature(b'png'),
             'image/filename': bytes_feature(image_name.encode('utf8')),
             'image/source_id': bytes_feature(image_name.encode('utf8')),
@@ -226,9 +228,9 @@ def secondstage(isTrainingData, saveImages=False):
 
     BGHEIGHT = 35
     BGWIDTH = 35
-    FOLDER = "test"
+    FOLDER = "evaluation"
     if isTrainingData:
-        FOLDER = "train"
+        FOLDER = "training"
     OUT_PATH = "output/"
     CROP_PATH = "crops/" + FOLDER + "/"
     timestamp = "{:%Y%m%d_%H%M%S}".format(datetime.datetime.now())
