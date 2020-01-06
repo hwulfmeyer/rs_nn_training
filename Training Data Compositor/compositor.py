@@ -12,6 +12,7 @@ import csv
 import datetime
 import decimal
 import io
+import os
 from os import listdir, makedirs
 from os.path import isfile, join
 
@@ -151,7 +152,7 @@ def firststage(isTrainingData, saveImages=False):
     CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
     csv_rows = []
     tf_examples = []
-    tfrec_writer = tf.io.TFRecordWriter(TFREC_OUT_PATH+".tfrecords")
+    tfrec_writer = tf.io.TFRecordWriter(TFREC_OUT_PATH+".record")
     for i in tqdm(range(SIZE)):
         bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
         crop = np.random.choice(CROPS)
@@ -168,7 +169,7 @@ def firststage(isTrainingData, saveImages=False):
         xmax = xmin+img.width
         ymin = pos[1]
         ymax = ymin+img.height
-        csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, xmin, xmax, ymin, ymax, brtn, rot, scl])
+        csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, xmin, xmax, ymin, ymax])
         tf_example = tf.train.Example(features=tf.train.Features(feature={      
             'image/encoded': bytes_feature(bg.tobytes()),
             'image/format': bytes_feature(b'png'),
@@ -178,10 +179,10 @@ def firststage(isTrainingData, saveImages=False):
             'image/height': int64_feature(bg.height),
             'image/object/class/text': bytes_feature(obj_class_str.encode('utf8')),
             'image/object/class/label': int64_feature(obj_class),
-            'image/object/bbox/xmin': int64_feature(xmin),
-            'image/object/bbox/xmax': int64_feature(xmax),
-            'image/object/bbox/ymin': int64_feature(ymin),
-            'image/object/bbox/ymax': int64_feature(ymax),
+            'image/object/bbox/xmin': float_list_feature([xmin / bg.width]),
+            'image/object/bbox/xmax': float_list_feature([xmax / bg.width]),
+            'image/object/bbox/ymin': float_list_feature([ymin / bg.height]),
+            'image/object/bbox/ymax': float_list_feature([ymax / bg.height]),
         }))
         tf_examples.append(tf_example)
         if saveImages:
@@ -225,9 +226,9 @@ def secondstage(isTrainingData, saveImages=False):
 
     BGHEIGHT = 35
     BGWIDTH = 35
-    FOLDER = "evaluation"
+    FOLDER = "test"
     if isTrainingData:
-        FOLDER = "training"
+        FOLDER = "train"
     OUT_PATH = "output/"
     CROP_PATH = "crops/" + FOLDER + "/"
     timestamp = "{:%Y%m%d_%H%M%S}".format(datetime.datetime.now())
@@ -278,14 +279,14 @@ def secondstage(isTrainingData, saveImages=False):
                 tf_examples.append(tf_example)
 
     writecsv(IMG_OUT_PATH+"labels.csv", csv_rows)
-    writetfrecord(TFREC_OUT_PATH+".tfrecords", tf_examples)
+    writetfrecord(TFREC_OUT_PATH+".record", tf_examples)
 
 
 if __name__ == "__main__":
     #img = generate_gaussiannoiseimg(SHAPE = (500, 500, 3), brtn=1.0)
     #img.save("gaussian_noise.png")
 
-    #firststage(True)
+    firststage(True)
     #firststage(False)
-    secondstage(True, False)
+    #secondstage(True, False)
     #secondstage(False, True)
