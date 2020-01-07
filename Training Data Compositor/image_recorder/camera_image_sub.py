@@ -1,22 +1,27 @@
 import rospy
 import cv2
 import time
+import sys
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 
 
 last_time = time.time()
+img_suffix = "x"
+if len(sys.argv) >= 2:
+	img_suffix = sys.argv[1]
+	
 
 def image_callback(data):
-    global last_time
-    try:
-        image = bridge.imgmsg_to_cv2(data, "passthrough")
-    except CvBridgeError as e:
-        print(e)
-    path = "images/{}_{}.jpg".format(int(time.time()), "dg")
-    if  time.time() - last_time > 3:
-        last_time = time.time()
-    	cv2.imwrite(path, image)
+	global last_time
+	try:
+		image = bridge.imgmsg_to_cv2(data, "passthrough")
+	except CvBridgeError as e:
+		print(e)
+	path = "images/{}_{}.jpg".format(int(time.time()), img_suffix)
+	if  time.time() - last_time > 3:
+		last_time = time.time()
+		cv2.imwrite(path, image)
 
 
 bridge = CvBridge()
