@@ -7,7 +7,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 
 last_time = time.time()
-img_suffix = "x"
+img_suffix = "8"
 if len(sys.argv) >= 2:
 	img_suffix = sys.argv[1]
 	
