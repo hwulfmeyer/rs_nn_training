@@ -23,6 +23,7 @@ from tqdm import tqdm
 
 np.random.seed(146324)
 
+print(tf.__version__)
 
 object_classes = {
     "sphero": 1
@@ -294,5 +295,5 @@ if __name__ == "__main__":
 
     firststage(True)
     firststage(False)
-    #secondstage(True, False)
-    #secondstage(False, True)
+    secondstage(True, False)
+    secondstage(False, True)

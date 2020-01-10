@@ -8,19 +8,23 @@ import numpy as np
 import tensorflow as tf
 from pprint import pprint
 
+tf.enable_eager_execution()
+
+
 ################################################################################
 
-FILE = "output/SecondStage_X/training_rot3.record"
+FILE = "training_rot3.record"
 OUT_PATH = "output/inspector_"
 TIMESTAMP = "X" #"{:%Y-%m-%d-%H-%M-%S}".format(datetime.now())
 OUT_PATH += TIMESTAMP+"/"
 os.makedirs(OUT_PATH, exist_ok=True)
 #####################################################################
 
-raw_dataset = tf.data.TFRecordDataset(FILE)
+record_dataset = tf.data.TFRecordDataset(FILE)
+
 
 statistics = {}
-for raw_record in raw_dataset:
+for raw_record in record_dataset:
     example = tf.train.Example()
     example.ParseFromString(raw_record.numpy())
     feats = example.features
