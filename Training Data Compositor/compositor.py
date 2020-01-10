@@ -23,6 +23,7 @@ from tqdm import tqdm
 
 np.random.seed(146324)
 
+print(tf.__version__)
 
 object_classes = {
     "sphero": 1
@@ -131,7 +132,7 @@ TODO:
     - mehrere objekte in einem bild ?
 """
 def firststage(isTrainingData, saveImages=False):
-    TRAIN_SIZE = 5000
+    TRAIN_SIZE = 6000
     TEST_SIZE = 1500
     BGHEIGHT = 300
     BGWIDTH = 300
@@ -239,14 +240,15 @@ def secondstage(isTrainingData, saveImages=False):
     TFREC_OUT_PATH = OUT_PATH+"SecondStage_"+timestamp+"/" + FOLDER
     makedirs(IMG_OUT_PATH, exist_ok=True)
     
-    CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
+    CROPS = [f for f in listdir(CROP_PATH) if (isfile(join(CROP_PATH, f)) and f.endswith('.png'))]
+    #print(CROPS)
     csv_rows = []
     tf_examples = []
 
     for crop in tqdm(CROPS):
-        print(crop)
+        #print(crop)
         for rot in range(360):
-            for k in range(15) if isTrainingData else range(2):
+            for k in range(6) if isTrainingData else range(2):
                 img = Image.open(CROP_PATH + crop)
                 if not isTrainingData:
                     img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
@@ -255,6 +257,9 @@ def secondstage(isTrainingData, saveImages=False):
                 bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, 3, rot)
 
                 # save image and csv
+                with io.BytesIO() as output:
+                    bg.save(output, format="PNG")
+                    io_image = output.getvalue()
                 obj_class_str = "sphero"
                 obj_class = object_classes.get(obj_class_str)
                 img_class_str = crop[:-5]
@@ -265,7 +270,7 @@ def secondstage(isTrainingData, saveImages=False):
                 csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, img_class_str, img_class, rot])
 
                 tf_example = tf.train.Example(features=tf.train.Features(feature={      
-                    'image/encoded': bytes_feature(bg.tobytes()),
+                    'image/encoded': bytes_feature(io_image),
                     'image/format': bytes_feature(b'png'),
                     'image/filename': bytes_feature(image_name.encode('utf8')),
                     'image/source_id': bytes_feature(image_name.encode('utf8')),
@@ -289,6 +294,6 @@ if __name__ == "__main__":
     #img.save("gaussian_noise.png")
 
     firststage(True)
-    #firststage(False)
-    #secondstage(True, False)
-    #secondstage(False, True)
+    firststage(False)
+    secondstage(True, False)
+    secondstage(False, True)
