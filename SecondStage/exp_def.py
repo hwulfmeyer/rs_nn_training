@@ -6,7 +6,8 @@ default_sstage_conf = {
     # converged after 15 / 10 / 5 epochs
     # 10 epochs after convergance for evaluation phase
     'epochs_cat': 25,
-    'epochs_reg': 20,
+    #'epochs_reg': 20,
+    'epochs_reg': 200,
     'epochs_bin': 15,
     'optimizer': 'adam',
     'learning_rate': 3e-4,

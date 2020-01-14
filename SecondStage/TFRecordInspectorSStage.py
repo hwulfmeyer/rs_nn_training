@@ -9,8 +9,8 @@ import tensorflow as tf
 from pprint import pprint
 
 ################################################################################
-
-FILE = "training_rot15_32400.tfrecords"
+FILE = '/home/josi/OvGU/Rolling Swarm/data/train/training_rot15_32400.tfrecords'
+#FILE = "training_rot15_32400.tfrecords"
 OUT_PATH = "output/inspector_"
 TIMESTAMP = "X" #"{:%Y-%m-%d-%H-%M-%S}".format(datetime.now())
 OUT_PATH += TIMESTAMP+"/"

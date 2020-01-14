@@ -7,8 +7,6 @@ import io
 from keras import backend as K
 from keras.utils import np_utils
 
-from rs_nn_training.Utils.file_utils import *
-
 # ANGLES_PER_BIN = 4
 # NUM_ORI_BINS = 90 # 360 / 4
 ANGLES_PER_BIN = 1
@@ -102,9 +100,7 @@ def tf_record_load_crops(files,num_per_record=-1,size=35):
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0]) #.decode('utf-8')
             width = feats.feature['image/width'].int64_list.value[0]
             height = feats.feature['image/height'].int64_list.value[0]
-            #img = Image.open(io.BytesIO(img_enc))
-            #img = Image.open(open(img_enc, "rb"))
-            img = Image.frombytes('RGB', (height, width), img_enc)
+            img = Image.open(io.BytesIO(img_enc))
             color = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf-8') 
             color_id = feats.feature["image/object/subclass/label"].int64_list.value[0]
             orientation = feats.feature["image/object/pose/orientation"].int64_list.value[0]
@@ -119,6 +115,8 @@ def tf_record_load_crops(files,num_per_record=-1,size=35):
 
     assert len(crops) == len(classes) and len(crops) == len(orientations)
     print("Loaded {} crops from {}".format(len(crops),files))
+
+    print(len(classes))
 
     return crops, classes, orientations, debug_infos
 
@@ -137,7 +135,7 @@ def tf_record_extract_crops(files, num_derivations,
     crops, classes, orientations = [],[],[]
     debug_infos = []
     for f in files:
-        #print(f)
+        print(f)
         record_iterator = tf.python_io.tf_record_iterator(f)
         #records = tf.data.TFRecordDataset(f)
         for l, string_record in enumerate(record_iterator):
@@ -152,9 +150,9 @@ def tf_record_extract_crops(files, num_derivations,
             height = 35
             img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
-            #img = Image.open(io.BytesIO(img_enc))
+            img = Image.open(io.BytesIO(img_enc))
             #img = Image.open(open(img_enc, "rb"))
-            img = Image.frombytes('RGB', (height, width), img_enc)
+            #img = Image.frombytes('RGB', (height, width), img_enc)
 
             for i,_ in enumerate(feats.feature["image/object/class/text"].bytes_list.value):
                 class_text = (feats.feature["image/object/subclass/text"].bytes_list.value[i]).decode('utf8')

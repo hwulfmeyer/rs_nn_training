@@ -13,23 +13,23 @@ from keras import backend as K
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, TensorBoard, EarlyStopping
 from keras.models import load_model
 
-import sys
+"""import sys
 #path des dir in dem rs_nn_training liegt
 sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/")
 from object_detection.utils import label_map_util
 from rs_nn_training.SecondStage.exp_def import *
 from rs_nn_training.Utils.file_utils import *
 from rs_nn_training.SecondStage.second_stage_utils import *
-
+"""
 ################################################################################
 
 GPU = True
-
+"""
 LOG_PATH = "/home/josi/OvGU/Rolling Swarm/output/second_stage/09-01-rot9-"
 LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/label_map.pbtxt'
 TRAIN_DIR = "/home/josi/OvGU/Rolling Swarm/data/train"
 EVAL_DIR = "/home/josi/OvGU/Rolling Swarm/data/test"
-
+"""
 #BATCH_SIZE = 32
 BATCH_SIZE = 1000
 
@@ -46,7 +46,6 @@ def train(train_record, conf, types, out, rep=1):
     os.makedirs(log_path, exist_ok=True)
     save_json(log_path + '/experiment_config.json', conf)
     label_map = label_map_util.create_category_index_from_labelmap(LABEL_MAP_PATH)
-
     num_classes = label_map_util.get_max_label_map_index(
                             label_map_util.load_labelmap(LABEL_MAP_PATH)) + 1
 
@@ -119,16 +118,11 @@ def train(train_record, conf, types, out, rep=1):
                                   'reg_out': angle_mae,
                                   'bin_out': angle_bin_error})
 
-
-    #############################################################################
-
-    
-
-    #############################################################################
-
     summary = TensorBoardCustom(log_dir=log_path,label_map=label_map)
     filepath=log_path+"model-{epoch:02d}.h5"
     checkpoint = ModelCheckpoint(filepath, verbose=1, period=5)
+
+    
 
     model_final.fit(
         X_train,
@@ -180,6 +174,8 @@ for or_conf in tqdm(exp):
                     else:
                         print('UNKNOWN OUTPUT CONFIG {}'.format(out))
                         continue
+                #in str() gecastet - warum hat das bei Lukas funktioniert?
+                #if not re.match(args.exp_name, train_instance_name):
                 if not re.match(str(args.exp_name), train_instance_name): 
                     #print('Skip '+train_instance_name)
                     continue            

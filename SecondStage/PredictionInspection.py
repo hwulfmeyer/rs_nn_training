@@ -23,14 +23,14 @@ from second_stage_utils import *
 # disable GPU
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-MODEL = '/home/josi/OvGU/Rolling Swarm/output/second_stage/sstage_default_sphero_cat/2020-01-04-14-44-r3/model-final.h5'
+MODEL = '/home/josi/OvGU/Rolling Swarm/output/second_stage/reg/09-01-rot15-sstage_default_sphero_reg/2020-01-09-19-13-r3/model-final.h5'
 OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/'
-TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/train/sphero/training_rot3_6480.tfrecords'
+TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/train/training_rot15_32400.tfrecords'
 EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/test/sphero'
 LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/label_map.pbtxt'
 TRAIN_OR_VAL = 'val'
-#MODE = "regression"
-MODE = "classification"
+MODE = "regression"
+#MODE = "classification"
 TYPES = ['sphero']
 IMG_SIZE = 35
 
@@ -50,9 +50,9 @@ else:
     eval_records = get_recursive_file_list(EVAL_DIR) 
     X,Y,Z,D = tf_record_extract_crops(eval_records, 1, 0.0, 0.0) 
     X_val, Y_val, Z_val = data_to_keras(X,Y,Z,num_classes,IMG_SIZE)
-
-print(X_val.shape)
-
+X_val
+#print(X_val.shape)
+X_val
 second_stage_model = load_model(MODEL,
                    custom_objects={
                    'relu6': ReLU,
@@ -65,9 +65,6 @@ second_stage_model = load_model(MODEL,
 
 #predictions = second_stage_model.predict(np.array(X_val))
 predictions = second_stage_model.predict(X_val)
-print("-------------------------------------------------------")
-print(X_val)
-print(predictions)
 cat = np.argmax(predictions[0],axis=1)
 cat_score = np.max(predictions[0],axis=1)
 ori = predictions[1]
@@ -75,7 +72,7 @@ ori = predictions[1]
 if MODE == "classification":
     for i in range(len(X_val)):
         if cat[i] == Y[i]:
-            print(i)
+            #print(i)
             continue
         img = Image.fromarray(X_val[i])
         pred_label = label_map[cat[i]]['name']
