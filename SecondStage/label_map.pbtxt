@@ -15,20 +15,20 @@ item {
 
 item {
   id: 4
-  name: 'bright_white'
-}
-
-item {
-  id: 5
   name: 'dark_blue'
 }
 
 item {
-  id: 6
+  id: 5
   name: 'dark_green'
 }
 
 item {
-  id: 7
+  id: 6
   name: 'dark_red'
+}
+
+item {
+  id: 7
+  name: 'bright_white'
 }

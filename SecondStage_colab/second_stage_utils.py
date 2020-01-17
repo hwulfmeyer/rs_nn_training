@@ -7,14 +7,6 @@ import io
 from keras import backend as K
 from keras.utils import np_utils
 
-from rs_nn_training.Utils.file_utils import *
-
-# ANGLES_PER_BIN = 4
-# NUM_ORI_BINS = 90 # 360 / 4
-ANGLES_PER_BIN = 1
-NUM_ORI_BINS = 360
-
-
 def make_square(im, size, fill_color=(0, 0, 0, 0)):
     x, y = im.size
     scl = size/max(x, y)
@@ -22,19 +14,6 @@ def make_square(im, size, fill_color=(0, 0, 0, 0)):
     new_im = Image.new('RGB', (size, size), fill_color)
     new_im.paste(im, (int((size - im.size[0]) / 2), int((size - im.size[1]) / 2)))
     return new_im
-
-
-# Doesn't converge well
-# def angle_diff(y_true, y_pred):
-#     a = y_true / 360.0 * np.pi
-#     b = y_pred / 360.0 * np.pi
-#     diff = tf.atan2(K.sin(a-b), K.cos(a-b))
-#     return diff / np.pi * 360.0
-# def np_angle_diff(y_true, y_pred):
-#     a = y_true / 360.0 * np.pi
-#     b = y_pred / 360.0 * np.pi
-#     diff = np.arctan2(np.sin(a-b), np.cos(a-b))
-#     return diff / np.pi * 360.0
 
 def angle_diff2(y_true, y_pred):
     return tf.mod(( (y_true - y_pred) + 180 ), 360 ) - 180
@@ -102,9 +81,10 @@ def tf_record_load_crops(files,num_per_record=-1,size=35):
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0]) #.decode('utf-8')
             width = feats.feature['image/width'].int64_list.value[0]
             height = feats.feature['image/height'].int64_list.value[0]
-            img = Image.open(io.BytesIO(img_enc))
-            #img = Image.open(open(img_enc, "rb"))
+
             #img = Image.frombytes('RGB', (height, width), img_enc)
+            img = Image.open(io.BytesIO(img_enc))
+
             color = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf-8') 
             color_id = feats.feature["image/object/subclass/label"].int64_list.value[0]
             orientation = feats.feature["image/object/pose/orientation"].int64_list.value[0]
@@ -137,19 +117,14 @@ def tf_record_extract_crops(files, num_derivations,
     crops, classes, orientations = [],[],[]
     debug_infos = []
     for f in files:
-        #print(f)
         record_iterator = tf.python_io.tf_record_iterator(f)
-        #records = tf.data.TFRecordDataset(f)
         for l, string_record in enumerate(record_iterator):
-        #for string_record in records:
             if num_per_record!=-1 and l > num_per_record: break
             example = tf.train.Example()
             example.ParseFromString(string_record) #.numpy())
             feats = example.features
-            #width  = feats.feature["image/width"].int64_list.value[0]
-            #height = feats.feature["image/height"].int64_list.value[0]
-            width = 35
-            height = 35
+            width  = feats.feature["image/width"].int64_list.value[0]
+            height = feats.feature["image/height"].int64_list.value[0]
             img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
             img = Image.open(io.BytesIO(img_enc))
@@ -184,7 +159,7 @@ def tf_record_extract_crops(files, num_derivations,
 from keras.callbacks import Callback
 import sklearn.metrics as sklm
 class TensorBoardCustom(Callback):
-    def __init__(self, log_dir='./logs',label_map='',images=''):
+    def __init__(self, log_dir='./logs',label_map=''):
         super(Callback, self).__init__()
         global tf, projector
         try:
@@ -195,7 +170,6 @@ class TensorBoardCustom(Callback):
 
         self.log_dir = log_dir
         self.label_map = label_map
-        self.images = images
 
     def set_model(self, model):
         self.model = model
@@ -263,7 +237,7 @@ class TensorBoardCustom(Callback):
         for name, value in logs.items():
             if name in ['batch', 'size']:
                 continue
-            # summary = tf.Summary()
+            # summary = tf.Summary()    
             # summary_value = summary.value.add()
             # summary_value.simple_value = value.item()
             # summary_value.tag = name
@@ -301,5 +275,5 @@ class TestSecondStageUtils(unittest.TestCase):
         self.assertEqual(angle_to_bin(370)[2], 1)
         self.assertEqual(angle_to_bin(-10)[87], 1)
 
-if __name__ == '__main__':
-    unittest.main()
+#if __name__ == '__main__':
+#    unittest.main()
