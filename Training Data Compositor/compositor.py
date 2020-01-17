@@ -11,10 +11,11 @@
 import csv
 import datetime
 import decimal
+import copy
 import io
 from os import listdir, makedirs
 from os.path import isfile, join
-
+import random
 import numpy as np
 import PIL
 import tensorflow as tf
@@ -80,6 +81,8 @@ def generate_gaussiannoiseimg(SHAPE = (1200, 1600, 3), brtn = None):
 
 def generate_random_image(img, bg, edge_distance=0, rot=None):
     # random scale
+    img = copy.deepcopy(img)
+    bg = copy.deepcopy(bg)
     scl = round(np.random.uniform(0.95, 1.05), 2)
     img = img.resize((int(scl*img.width),int(scl*img.height)), resample=Image.LANCZOS)
 
@@ -132,7 +135,7 @@ TODO:
     - mehrere objekte in einem bild ?
 """
 def firststage(isTrainingData, saveImages=False):
-    TRAIN_SIZE = 6000
+    TRAIN_SIZE = 5000
     TEST_SIZE = 1500
     BGHEIGHT = 300
     BGWIDTH = 300
@@ -150,29 +153,55 @@ def firststage(isTrainingData, saveImages=False):
     makedirs(IMG_OUT_PATH, exist_ok=True)
 
     CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
-    csv_rows = []
     tf_examples = []
     tfrec_writer = tf.io.TFRecordWriter(TFREC_OUT_PATH+".record")
     for i in tqdm(range(SIZE)):
         bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
-        crop = np.random.choice(CROPS)
-        img = Image.open(CROP_PATH + crop, 'r')
-        if not isTrainingData:
-            img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
-        bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, edge_distance=5)
+        xmins, xmaxs, ymins, ymaxs, obj_class_str, obj_class = [], [], [], [], [], []
+        for k in range(random.randint(2,5)):
+            crop = np.random.choice(CROPS)
+            img = Image.open(CROP_PATH + crop, 'r')
+            if not isTrainingData:
+                img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
 
-        obj_class_str = "sphero"
-        obj_class = object_classes.get(obj_class_str)
-        
+            repeat = True
+            while repeat:
+                new_bg, new_img, pos, _,_,_ = generate_random_image(img, bg, edge_distance=5)
+                addedsize = 5
+                xmin = pos[0] - addedsize
+                xmax = pos[0] + addedsize + img.width
+                ymin = pos[1] - addedsize
+                ymax = pos[1] + addedsize + img.height
+                repeat = False
+                for p in range(len(xmins)):
+                    # check if overlapping another sphero, bounding box style
+                    if ymin >= ymins[p] and ymin <= ymaxs[p] and xmin >= xmins[p] and xmin <= xmaxs[p]:
+                        repeat = True
+                    if ymin >= ymins[p] and ymin <= ymaxs[p] and xmax >= xmins[p] and xmax <= xmaxs[p]:
+                        repeat = True
+                    if ymax >= ymins[p] and ymax <= ymaxs[p] and xmin >= xmins[p] and xmin <= xmaxs[p]:
+                        repeat = True
+                    if ymax >= ymins[p] and ymax <= ymaxs[p] and xmax >= xmins[p] and xmax <= xmaxs[p]:
+                        repeat = True
+
+
+            img = new_img
+            bg = new_bg
+            xmins.append(xmin)
+            xmaxs.append(xmax)
+            ymins.append(ymin)
+            ymaxs.append(ymax)
+            obj_class_str.append("sphero".encode('utf8'))
+            obj_class.append(object_classes.get("sphero"))
+        xmins = [x / bg.width for x in xmins]
+        xmaxs = [x / bg.width for x in xmaxs]
+        ymins = [x / bg.height for x in ymins]
+        ymaxs = [x / bg.height for x in ymaxs]
+        image_name = str(i) +  ".png"
         with io.BytesIO() as output:
             bg.save(output, format="PNG")
             io_image = output.getvalue()
-        image_name = str(i) +  ".png"
-        xmin = pos[0]
-        xmax = xmin+img.width
-        ymin = pos[1]
-        ymax = ymin+img.height
-        csv_rows.append([image_name, bg.width, bg.height, obj_class_str, obj_class, xmin, xmax, ymin, ymax])
+
         tf_example = tf.train.Example(features=tf.train.Features(feature={      
             'image/encoded': bytes_feature(io_image),
             'image/format': bytes_feature(b'png'),
@@ -180,12 +209,12 @@ def firststage(isTrainingData, saveImages=False):
             'image/source_id': bytes_feature(image_name.encode('utf8')),
             'image/width': int64_feature(bg.width),
             'image/height': int64_feature(bg.height),
-            'image/object/class/text': bytes_feature(obj_class_str.encode('utf8')),
-            'image/object/class/label': int64_feature(obj_class),
-            'image/object/bbox/xmin': float_list_feature([xmin / bg.width]),
-            'image/object/bbox/xmax': float_list_feature([xmax / bg.width]),
-            'image/object/bbox/ymin': float_list_feature([ymin / bg.height]),
-            'image/object/bbox/ymax': float_list_feature([ymax / bg.height]),
+            'image/object/class/text': bytes_list_feature(obj_class_str),
+            'image/object/class/label': int64_list_feature(obj_class),
+            'image/object/bbox/xmin': float_list_feature(xmins),
+            'image/object/bbox/xmax': float_list_feature(xmaxs),
+            'image/object/bbox/ymin': float_list_feature(ymins),
+            'image/object/bbox/ymax': float_list_feature(ymaxs),
         }))
         tf_examples.append(tf_example)
         if saveImages:
@@ -199,8 +228,6 @@ def firststage(isTrainingData, saveImages=False):
     for example in tf_examples:
         tfrec_writer.write(example.SerializeToString())
     tfrec_writer.close()
-    tf_examples = []
-    writecsv(IMG_OUT_PATH+"labels.csv", csv_rows)
 
 
 
@@ -293,7 +320,7 @@ if __name__ == "__main__":
     #img = generate_gaussiannoiseimg(SHAPE = (500, 500, 3), brtn=1.0)
     #img.save("gaussian_noise.png")
 
-    firststage(True)
-    firststage(False)
-    secondstage(True, False)
-    secondstage(False, True)
+    firststage(True, True)
+    firststage(False, True)
+    #secondstage(True, False)
+    #secondstage(False, True)
