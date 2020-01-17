@@ -23,10 +23,10 @@ from second_stage_utils import *
 # disable GPU
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-MODEL = '/home/josi/OvGU/Rolling Swarm/output/second_stage/reg/09-01-rot15-sstage_default_sphero_reg/2020-01-09-19-13-r3/model-final.h5'
-OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/'
-TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/train/training_rot15_32400.tfrecords'
-EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/test/sphero'
+MODEL = '/home/josi/OvGU/Rolling Swarm/output/5_pos/reg/rot6/b=4096/2020-01-16-08-05-r1/model-final.h5'
+OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/5_pos/'
+TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/train/training_rot6.record'
+EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/train/sphero'
 LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/label_map.pbtxt'
 TRAIN_OR_VAL = 'val'
 MODE = "regression"
@@ -86,7 +86,7 @@ if MODE == "regression":
         pred = ori[i]
         gt = Z[i]
         diff = np_angle_diff2(gt,pred)
-        if (abs(diff) < 30): num_in_tol += 1
+        if (abs(diff) < 1.5): num_in_tol += 1
         print('Image {} diff of {} and {} is {}'.format(i, pred, gt, diff))
         img.save(OUT_PATH+'{:03d}-pred-{}-gt-{}.png'.format(i,pred,gt))
     print(num_in_tol / len(X_val))
