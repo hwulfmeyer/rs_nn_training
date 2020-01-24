@@ -1,4 +1,4 @@
-["rgb(255,0,0)", 
+["rgb(255,0,0)",
 "rgb(255,85,0)", 
 "rgb(255,170,0)", 
 "rgb(255,255,0)", 
@@ -22,6 +22,14 @@
 "light_blue",
 "blue"]
 
+red => bright_red
+green => bright_green
+blue => bright_blue
+
+dark_red => 150,0,0
+dark_green => 128,0,0
+dark_blue => 150,0,0
+white => 185,128,50
 
 // "rgb(0,255,255)" and "rgb(255,255,255)" look almost identical
 
