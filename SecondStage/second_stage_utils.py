@@ -7,7 +7,7 @@ import io
 from keras import backend as K
 from keras.utils import np_utils
 
-from rs_nn_training.Utils.file_utils import *
+#from rs_nn_training.Utils.file_utils import *
 
 # ANGLES_PER_BIN = 4
 # NUM_ORI_BINS = 90 # 360 / 4
@@ -37,7 +37,7 @@ def make_square(im, size, fill_color=(0, 0, 0, 0)):
 #     return diff / np.pi * 360.0
 
 def angle_diff2(y_true, y_pred):
-    return tf.mod(( (y_true - y_pred) + 180 ), 360 ) - 180
+    return tf.math.mod(( (y_true - y_pred) + 180 ), 360 ) - 180
 
 def np_angle_diff2(y_true, y_pred):
     return np.mod(( (y_true - y_pred) + 180 ), 360 ) - 180
@@ -146,10 +146,10 @@ def tf_record_extract_crops(files, num_derivations,
             example = tf.train.Example()
             example.ParseFromString(string_record) #.numpy())
             feats = example.features
-            #width  = feats.feature["image/width"].int64_list.value[0]
-            #height = feats.feature["image/height"].int64_list.value[0]
-            width = 35
-            height = 35
+            width  = feats.feature["image/width"].int64_list.value[0]
+            height = feats.feature["image/height"].int64_list.value[0]
+            #width = 35
+            #height = 35
             img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
             img = Image.open(io.BytesIO(img_enc))
