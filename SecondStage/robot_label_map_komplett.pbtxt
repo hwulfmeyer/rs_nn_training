@@ -1,0 +1,266 @@
+item {
+  id: 1
+  name: 'copter'
+}
+
+item {
+  id: 2
+  name: 'sphero'
+}
+
+item {
+  id: 3
+  name: 'nao'
+}
+
+item {
+  id: 4
+  name: 'car'
+}
+
+item {
+  id: 5
+  name: 'youbot'
+}
+
+item {
+  id: 6
+  name: 'placeholder1'
+}
+
+item {
+  id: 7
+  name: 'placeholder2'
+}
+
+item {
+  id: 8
+  name: 'placeholder3'
+}
+
+item {
+  id: 9
+  name: 'placeholder4'
+}
+
+item {
+  id: 10
+  name: 'copter_undefined'
+}
+
+item {
+  id: 11
+  name: 'copter_orange'
+}
+
+item {
+  id: 12
+  name: 'copter_green'
+}
+
+item {
+  id: 13
+  name: 'copter_yellow'
+}
+
+item {
+  id: 14
+  name: 'copter_blue'
+}
+
+item {
+  id: 15
+  name: 'copter_purple'
+}
+
+item {
+  id: 16
+  name: 'copter_cyan'
+}
+
+item {
+  id: 17
+  name: 'copter_white'
+}
+
+item {
+  id: 18
+  name: 'copter_black_black'
+}
+
+item {
+  id: 19
+  name: 'copter_placeholder1'
+}
+
+item {
+  id: 20
+  name: 'copter_black_orange'
+}
+
+item {
+  id: 21
+  name: 'copter_black_green'
+}
+
+item {
+  id: 22
+  name: 'copter_black_blue'
+}
+
+item {
+  id: 23
+  name: 'copter_black_white'
+}
+
+item {
+  id: 24
+  name: 'copter_orange_orange'
+}
+
+item {
+  id: 25
+  name: 'copter_orange_green'
+}
+
+item {
+  id: 26
+  name: 'copter_orange_blue'
+}
+
+item {
+  id: 27
+  name: 'copter_orange_white'
+}
+
+item {
+  id: 28
+  name: 'copter_green_green'
+}
+
+item {
+  id: 29
+  name: 'copter_green_blue'
+}
+
+item {
+  id: 30
+  name: 'copter_green_white'
+}
+
+item {
+  id: 31
+  name: 'copter_blue_blue'
+}
+
+item {
+  id: 32
+  name: 'copter_blue_white'
+}
+
+item {
+  id: 33
+  name: 'copter_white_white'
+}
+
+item {
+  id: 34
+  name: 'sphero_undefined'
+}
+
+item {
+  id: 35
+  name: 'sphero_red'
+}
+
+item {
+  id: 36
+  name: 'sphero_yellow'
+}
+
+item {
+  id: 37
+  name: 'sphero_lime_green'
+}
+
+item {
+  id: 38
+  name: 'sphero_magenta'
+}
+
+item {
+  id: 39
+  name: 'sphero_purple'
+}
+
+item {
+  id: 40
+  name: 'sphero_green'
+}
+
+item {
+  id: 41
+  name: 'sphero_blue_green'
+}
+
+item {
+  id: 42
+  name: 'sphero_light_blue'
+}
+
+# youbot_A at id 48
+
+item {
+  id: 43
+  name: 'youbot_B'
+}
+
+item {
+  id: 44
+  name: 'youbot_C'
+}
+
+item {
+  id: 45
+  name: 'copter_A'
+}
+
+item {
+  id: 46
+  name: 'copter_B'
+}
+
+item {
+  id: 47
+  name: 'copter_C'
+}
+
+item {
+  id: 48
+  name: 'youbot_A'
+}
+
+item {
+  id: 49
+  name: 'sphero_blue'
+}
+
+item {
+  id: 50
+  name: 'sphero_dark_blue'
+}
+
+item {
+  id: 51
+  name: 'sphero_dark_red'
+}
+
+item {
+  id: 52
+  name: 'sphero_dark_green'
+}
+
+item {
+  id: 53
+  name: 'sphero_white'
+}
