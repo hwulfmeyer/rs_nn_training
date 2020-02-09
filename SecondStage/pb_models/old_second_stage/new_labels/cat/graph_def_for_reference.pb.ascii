@@ -163,7 +163,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 7927267
+      i: 8712794
     }
   }
 }
@@ -816,12 +816,12 @@ node {
 node {
   name: "conv1_bn/VarIsInitializedOp_3"
   op: "VarIsInitializedOp"
-  input: "conv1_bn/moving_mean"
+  input: "conv1_bn/moving_variance"
 }
 node {
   name: "conv1_bn/VarIsInitializedOp_4"
   op: "VarIsInitializedOp"
-  input: "conv1_bn/moving_variance"
+  input: "conv1_bn/moving_mean"
 }
 node {
   name: "conv1_bn/init"
@@ -1997,7 +1997,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 1980370
+      i: 6979802
     }
   }
 }
@@ -3832,7 +3832,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 6753850
+      i: 5345690
     }
   }
 }
@@ -5677,7 +5677,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 8023852
+      i: 4018402
     }
   }
 }
@@ -7512,7 +7512,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 3189626
+      i: 1592316
     }
   }
 }
@@ -9312,7 +9312,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 1382271
+      i: 6154805
     }
   }
 }
@@ -11147,7 +11147,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 2738573
+      i: 5617488
     }
   }
 }
@@ -12992,7 +12992,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 6104676
+      i: 631672
     }
   }
 }
@@ -14827,7 +14827,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 4741292
+      i: 8804630
     }
   }
 }
@@ -16627,7 +16627,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 273886
+      i: 815002
     }
   }
 }
@@ -18462,7 +18462,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 8622330
+      i: 9694830
     }
   }
 }
@@ -20307,7 +20307,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 4570271
+      i: 6744352
     }
   }
 }
@@ -22142,7 +22142,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 6504303
+      i: 333339
     }
   }
 }
@@ -23942,7 +23942,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 4985887
+      i: 3216233
     }
   }
 }
@@ -25777,7 +25777,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 4913682
+      i: 2391248
     }
   }
 }
@@ -27577,7 +27577,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 2814562
+      i: 1924456
     }
   }
 }
@@ -29412,7 +29412,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 537767
+      i: 4960120
     }
   }
 }
@@ -31212,7 +31212,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 2942237
+      i: 3799650
     }
   }
 }
@@ -33047,7 +33047,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 5526839
+      i: 2202295
     }
   }
 }
@@ -34847,7 +34847,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 661855
+      i: 7447692
     }
   }
 }
@@ -36682,7 +36682,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 3165165
+      i: 2582313
     }
   }
 }
@@ -38482,7 +38482,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 2968139
+      i: 8080794
     }
   }
 }
@@ -40317,7 +40317,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 2801281
+      i: 3119833
     }
   }
 }
@@ -42162,7 +42162,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 6407399
+      i: 4628023
     }
   }
 }
@@ -43997,7 +43997,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 1123630
+      i: 3152065
     }
   }
 }
@@ -45797,7 +45797,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 3494685
+      i: 9372398
     }
   }
 }
@@ -47632,7 +47632,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 2290097
+      i: 5237164
     }
   }
 }
@@ -49665,7 +49665,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\001\000\000\000\001\000\000\000\000\002\000\0007\000\000\000"
+        tensor_content: "\001\000\000\000\001\000\000\000\000\002\000\0006\000\000\000"
       }
     }
   }
@@ -49686,7 +49686,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: -0.10286889970302582
+        float_val: -0.10295973718166351
       }
     }
   }
@@ -49707,7 +49707,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: 0.10286889970302582
+        float_val: 0.10295973718166351
       }
     }
   }
@@ -49737,7 +49737,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 1737358
+      i: 9092411
     }
   }
 }
@@ -49814,7 +49814,7 @@ node {
           size: 512
         }
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -49886,7 +49886,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
           dim {
-            size: 55
+            size: 54
           }
         }
         float_val: 0.0
@@ -49922,7 +49922,7 @@ node {
     value {
       shape {
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -50168,7 +50168,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 2800060
+      i: 5506741
     }
   }
 }
@@ -50599,7 +50599,7 @@ node {
   attr {
     key: "seed2"
     value {
-      i: 4117951
+      i: 5774154
     }
   }
 }
@@ -51355,7 +51355,7 @@ node {
         dtype: DT_INT32
         tensor_shape {
         }
-        int_val: 55
+        int_val: 54
       }
     }
   }
@@ -58012,7 +58012,7 @@ node {
           size: 512
         }
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -58056,7 +58056,7 @@ node {
     value {
       shape {
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -58283,67 +58283,67 @@ node {
 node {
   name: "VarIsInitializedOp"
   op: "VarIsInitializedOp"
-  input: "conv_dw_12_bn/moving_variance"
+  input: "conv_dw_7_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_1"
   op: "VarIsInitializedOp"
-  input: "conv_dw_7_bn/moving_variance"
+  input: "conv_pw_7_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_2"
   op: "VarIsInitializedOp"
-  input: "conv_dw_5_bn/moving_variance"
+  input: "conv_pw_13_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_3"
   op: "VarIsInitializedOp"
-  input: "conv_dw_6/depthwise_kernel"
+  input: "conv_pw_8_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_4"
   op: "VarIsInitializedOp"
-  input: "conv_pw_12_bn/moving_mean"
+  input: "conv_pw_13_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_5"
   op: "VarIsInitializedOp"
-  input: "conv_pw_12_bn/beta"
+  input: "conv_pw_1_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_6"
   op: "VarIsInitializedOp"
-  input: "conv_dw_9_bn/moving_variance"
+  input: "conv_pw_9_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_7"
   op: "VarIsInitializedOp"
-  input: "conv_dw_7_bn/moving_mean"
+  input: "conv_dw_1/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_8"
   op: "VarIsInitializedOp"
-  input: "conv_dw_7_bn/beta"
+  input: "conv_dw_7_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_9"
   op: "VarIsInitializedOp"
-  input: "conv_pw_9_bn/moving_variance"
+  input: "conv_dw_3_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_10"
   op: "VarIsInitializedOp"
-  input: "conv_dw_11_bn/moving_variance"
+  input: "conv_pw_3_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_11"
   op: "VarIsInitializedOp"
-  input: "conv_pw_3_bn/moving_variance"
+  input: "conv_dw_7_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_12"
   op: "VarIsInitializedOp"
-  input: "conv_pw_10_bn/moving_variance"
+  input: "conv_dw_10_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_13"
@@ -58353,127 +58353,127 @@ node {
 node {
   name: "VarIsInitializedOp_14"
   op: "VarIsInitializedOp"
-  input: "conv_pw_11_bn/moving_variance"
+  input: "conv_dw_10/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_15"
   op: "VarIsInitializedOp"
-  input: "conv_dw_1_bn/beta"
+  input: "conv_dw_8_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_16"
   op: "VarIsInitializedOp"
-  input: "conv_pw_2_bn/moving_variance"
+  input: "conv_dw_7_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_17"
   op: "VarIsInitializedOp"
-  input: "conv_dw_1_bn/moving_mean"
+  input: "conv_dw_8_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_18"
   op: "VarIsInitializedOp"
-  input: "conv_dw_3_bn/beta"
+  input: "conv_dw_2/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_19"
   op: "VarIsInitializedOp"
-  input: "conv_pw_7_bn/gamma"
+  input: "conv_dw_10_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_20"
   op: "VarIsInitializedOp"
-  input: "conv_bin/kernel"
+  input: "conv_pw_2_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_21"
   op: "VarIsInitializedOp"
-  input: "conv_dw_13_bn/beta"
+  input: "conv_dw_10_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_22"
   op: "VarIsInitializedOp"
-  input: "conv_dw_3_bn/moving_mean"
+  input: "conv_dw_11_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_23"
   op: "VarIsInitializedOp"
-  input: "conv_pw_8_bn/gamma"
+  input: "conv_dw_3_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_24"
   op: "VarIsInitializedOp"
-  input: "conv_pw_12_bn/moving_variance"
+  input: "conv_dw_11_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_25"
   op: "VarIsInitializedOp"
-  input: "conv_bin/bias"
+  input: "conv_dw_3_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_26"
   op: "VarIsInitializedOp"
-  input: "conv_dw_11_bn/beta"
+  input: "conv_dw_10_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_27"
   op: "VarIsInitializedOp"
-  input: "conv_pw_11_bn/gamma"
+  input: "conv_dw_11_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_28"
   op: "VarIsInitializedOp"
-  input: "conv_dw_12/depthwise_kernel"
+  input: "conv_pw_6_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_29"
   op: "VarIsInitializedOp"
-  input: "conv_dw_5_bn/gamma"
+  input: "conv_pw_13_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_30"
   op: "VarIsInitializedOp"
-  input: "conv_pw_2_bn/gamma"
+  input: "conv_dw_12/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_31"
   op: "VarIsInitializedOp"
-  input: "conv_dw_2_bn/gamma"
+  input: "conv_dw_1_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_32"
   op: "VarIsInitializedOp"
-  input: "conv_dw_4_bn/gamma"
+  input: "conv_dw_2_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_33"
   op: "VarIsInitializedOp"
-  input: "conv_dw_13_bn/moving_mean"
+  input: "conv_pw_5/kernel"
 }
 node {
   name: "VarIsInitializedOp_34"
   op: "VarIsInitializedOp"
-  input: "conv_dw_2_bn/beta"
+  input: "conv_dw_4_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_35"
   op: "VarIsInitializedOp"
-  input: "conv_pw_9/kernel"
+  input: "conv_dw_12_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_36"
   op: "VarIsInitializedOp"
-  input: "conv_dw_4_bn/beta"
+  input: "conv_dw_2_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_37"
   op: "VarIsInitializedOp"
-  input: "conv_reg/bias"
+  input: "conv_dw_13_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_38"
   op: "VarIsInitializedOp"
-  input: "conv_dw_7_bn/gamma"
+  input: "conv_dw_4_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_39"
@@ -58483,7 +58483,7 @@ node {
 node {
   name: "VarIsInitializedOp_40"
   op: "VarIsInitializedOp"
-  input: "conv_dw_5/depthwise_kernel"
+  input: "conv_pw_7/kernel"
 }
 node {
   name: "VarIsInitializedOp_41"
@@ -58493,67 +58493,67 @@ node {
 node {
   name: "VarIsInitializedOp_42"
   op: "VarIsInitializedOp"
-  input: "conv_pw_10/kernel"
+  input: "conv_pw_2/kernel"
 }
 node {
   name: "VarIsInitializedOp_43"
   op: "VarIsInitializedOp"
-  input: "conv_dw_11_bn/gamma"
+  input: "conv_dw_9_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_44"
   op: "VarIsInitializedOp"
-  input: "conv_pw_7/kernel"
+  input: "conv_pw_10/kernel"
 }
 node {
   name: "VarIsInitializedOp_45"
   op: "VarIsInitializedOp"
-  input: "conv_dw_3_bn/gamma"
+  input: "conv_pw_11/kernel"
 }
 node {
   name: "VarIsInitializedOp_46"
   op: "VarIsInitializedOp"
-  input: "conv_pw_5/kernel"
+  input: "conv_dw_5/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_47"
   op: "VarIsInitializedOp"
-  input: "conv_pw_7_bn/beta"
+  input: "conv_pw_7_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_48"
   op: "VarIsInitializedOp"
-  input: "conv_dw_9/depthwise_kernel"
+  input: "conv_pw_8_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_49"
   op: "VarIsInitializedOp"
-  input: "conv_dw_13/depthwise_kernel"
+  input: "conv_pw_7_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_50"
   op: "VarIsInitializedOp"
-  input: "conv_pw_9_bn/beta"
+  input: "conv_pw_7_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_51"
   op: "VarIsInitializedOp"
-  input: "conv_pw_3_bn/moving_mean"
+  input: "conv_pw_8_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_52"
   op: "VarIsInitializedOp"
-  input: "conv_pw_10_bn/moving_mean"
+  input: "conv_cat/kernel"
 }
 node {
   name: "VarIsInitializedOp_53"
   op: "VarIsInitializedOp"
-  input: "conv_pw_2/kernel"
+  input: "conv_pw_1_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_54"
   op: "VarIsInitializedOp"
-  input: "conv_pw_3_bn/gamma"
+  input: "conv_pw_8_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_55"
@@ -58563,157 +58563,157 @@ node {
 node {
   name: "VarIsInitializedOp_56"
   op: "VarIsInitializedOp"
-  input: "conv_pw_10_bn/gamma"
+  input: "conv_pw_1_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_57"
   op: "VarIsInitializedOp"
-  input: "conv_pw_3_bn/beta"
+  input: "conv_pw_9_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_58"
   op: "VarIsInitializedOp"
-  input: "conv_dw_7/depthwise_kernel"
+  input: "conv_pw_1_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_59"
   op: "VarIsInitializedOp"
-  input: "conv_pw_10_bn/beta"
+  input: "conv_pw_9_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_60"
   op: "VarIsInitializedOp"
-  input: "conv_pw_11_bn/beta"
+  input: "conv_pw_3_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_61"
   op: "VarIsInitializedOp"
-  input: "conv_pw_11_bn/moving_mean"
+  input: "conv_pw_3_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_62"
   op: "VarIsInitializedOp"
-  input: "conv_dw_4_bn/moving_variance"
+  input: "conv_dw_7/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_63"
   op: "VarIsInitializedOp"
-  input: "conv_pw_2_bn/moving_mean"
+  input: "conv_pw_3_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_64"
   op: "VarIsInitializedOp"
-  input: "conv_pw_5_bn/gamma"
+  input: "conv_pw_2_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_65"
   op: "VarIsInitializedOp"
-  input: "conv_pw_6/kernel"
+  input: "conv_pw_8/kernel"
 }
 node {
   name: "VarIsInitializedOp_66"
   op: "VarIsInitializedOp"
-  input: "conv_pw_8/kernel"
+  input: "conv_pw_2_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_67"
   op: "VarIsInitializedOp"
-  input: "conv_pw_5_bn/beta"
+  input: "conv_dw_4_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_68"
   op: "VarIsInitializedOp"
-  input: "conv_pw_7_bn/moving_mean"
+  input: "conv_pw_2_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_69"
   op: "VarIsInitializedOp"
-  input: "conv_pw_7_bn/moving_variance"
+  input: "conv_dw_2_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_70"
   op: "VarIsInitializedOp"
-  input: "conv_pw_2_bn/beta"
+  input: "conv_dw_8_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_71"
   op: "VarIsInitializedOp"
-  input: "conv_dw_2_bn/moving_variance"
+  input: "conv_pw_12_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_72"
   op: "VarIsInitializedOp"
-  input: "conv_pw_13/kernel"
+  input: "conv_bin/kernel"
 }
 node {
   name: "VarIsInitializedOp_73"
   op: "VarIsInitializedOp"
-  input: "conv_dw_13_bn/moving_variance"
+  input: "conv_pw_12_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_74"
   op: "VarIsInitializedOp"
-  input: "conv_dw_8_bn/moving_variance"
+  input: "conv_pw_3/kernel"
 }
 node {
   name: "VarIsInitializedOp_75"
   op: "VarIsInitializedOp"
-  input: "conv_reg/kernel"
+  input: "conv_dw_9_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_76"
   op: "VarIsInitializedOp"
-  input: "conv_pw_1/kernel"
+  input: "conv_pw_12_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_77"
   op: "VarIsInitializedOp"
-  input: "conv_pw_8_bn/moving_variance"
+  input: "conv_reg/kernel"
 }
 node {
   name: "VarIsInitializedOp_78"
   op: "VarIsInitializedOp"
-  input: "conv_dw_1_bn/moving_variance"
+  input: "conv_pw_4/kernel"
 }
 node {
   name: "VarIsInitializedOp_79"
   op: "VarIsInitializedOp"
-  input: "conv_pw_13_bn/moving_mean"
+  input: "conv_pw_10_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_80"
   op: "VarIsInitializedOp"
-  input: "conv_dw_3_bn/moving_variance"
+  input: "conv_dw_9_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_81"
   op: "VarIsInitializedOp"
-  input: "conv_dw_1/depthwise_kernel"
+  input: "conv_dw_11_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_82"
   op: "VarIsInitializedOp"
-  input: "conv_dw_6_bn/gamma"
+  input: "conv_pw_11_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_83"
   op: "VarIsInitializedOp"
-  input: "conv_dw_9_bn/moving_mean"
+  input: "conv_dw_6_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_84"
   op: "VarIsInitializedOp"
-  input: "conv_dw_5_bn/moving_mean"
+  input: "conv_dw_9_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_85"
   op: "VarIsInitializedOp"
-  input: "conv_dw_10_bn/moving_mean"
+  input: "conv_dw_11/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_86"
   op: "VarIsInitializedOp"
-  input: "conv_dw_2/depthwise_kernel"
+  input: "conv_dw_5_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_87"
@@ -58723,242 +58723,242 @@ node {
 node {
   name: "VarIsInitializedOp_88"
   op: "VarIsInitializedOp"
-  input: "conv_pw_6_bn/gamma"
+  input: "conv_dw_1_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_89"
   op: "VarIsInitializedOp"
-  input: "conv_dw_11_bn/moving_mean"
+  input: "conv_dw_1_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_90"
   op: "VarIsInitializedOp"
-  input: "conv_dw_8_bn/beta"
+  input: "conv_dw_4/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_91"
   op: "VarIsInitializedOp"
-  input: "conv_dw_4/depthwise_kernel"
+  input: "conv_dw_6_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_92"
   op: "VarIsInitializedOp"
-  input: "conv_dw_6_bn/beta"
+  input: "conv_dw_6_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_93"
   op: "VarIsInitializedOp"
-  input: "conv_dw_9_bn/beta"
+  input: "conv_dw_1_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_94"
   op: "VarIsInitializedOp"
-  input: "conv_pw_9_bn/gamma"
+  input: "conv_dw_6_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_95"
   op: "VarIsInitializedOp"
-  input: "conv_dw_10_bn/beta"
+  input: "conv_dw_9/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_96"
   op: "VarIsInitializedOp"
-  input: "conv_dw_6_bn/moving_mean"
+  input: "conv_bin/bias"
 }
 node {
   name: "VarIsInitializedOp_97"
   op: "VarIsInitializedOp"
-  input: "conv_pw_13_bn/moving_variance"
+  input: "conv_pw_5_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_98"
   op: "VarIsInitializedOp"
-  input: "conv_pw_4_bn/beta"
+  input: "conv_dw_13_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_99"
   op: "VarIsInitializedOp"
-  input: "conv_dw_10_bn/moving_variance"
+  input: "conv_pw_4_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_100"
   op: "VarIsInitializedOp"
-  input: "conv_pw_12_bn/gamma"
+  input: "conv_dw_13/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_101"
   op: "VarIsInitializedOp"
-  input: "conv_pw_5_bn/moving_variance"
+  input: "conv_pw_5_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_102"
   op: "VarIsInitializedOp"
-  input: "conv_dw_12_bn/gamma"
+  input: "conv_pw_5_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_103"
   op: "VarIsInitializedOp"
-  input: "conv_pw_11/kernel"
+  input: "conv_pw_12_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_104"
   op: "VarIsInitializedOp"
-  input: "conv_dw_8/depthwise_kernel"
+  input: "conv_dw_13_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_105"
   op: "VarIsInitializedOp"
-  input: "conv_pw_13_bn/gamma"
+  input: "conv_dw_13_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_106"
   op: "VarIsInitializedOp"
-  input: "conv_dw_6_bn/moving_variance"
+  input: "conv_pw_13_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_107"
   op: "VarIsInitializedOp"
-  input: "conv_dw_12_bn/beta"
+  input: "conv_pw_5_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_108"
   op: "VarIsInitializedOp"
-  input: "conv_pw_1_bn/moving_variance"
+  input: "conv_dw_12_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_109"
   op: "VarIsInitializedOp"
-  input: "conv_dw_8_bn/gamma"
+  input: "conv_dw_12_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_110"
   op: "VarIsInitializedOp"
-  input: "conv_dw_10/depthwise_kernel"
+  input: "conv_dw_6/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_111"
   op: "VarIsInitializedOp"
-  input: "conv_pw_3/kernel"
+  input: "conv_pw_9/kernel"
 }
 node {
   name: "VarIsInitializedOp_112"
   op: "VarIsInitializedOp"
-  input: "conv_dw_9_bn/gamma"
+  input: "conv_dw_8/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_113"
   op: "VarIsInitializedOp"
-  input: "conv_dw_11/depthwise_kernel"
+  input: "conv_dw_12_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_114"
   op: "VarIsInitializedOp"
-  input: "conv_dw_10_bn/gamma"
+  input: "conv_pw_1/kernel"
 }
 node {
   name: "VarIsInitializedOp_115"
   op: "VarIsInitializedOp"
-  input: "conv_dw_12_bn/moving_mean"
+  input: "conv_pw_6_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_116"
   op: "VarIsInitializedOp"
-  input: "conv_dw_1_bn/gamma"
+  input: "conv_pw_6_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_117"
   op: "VarIsInitializedOp"
-  input: "conv_pw_6_bn/beta"
+  input: "conv_dw_3_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_118"
   op: "VarIsInitializedOp"
-  input: "conv_pw_5_bn/moving_mean"
+  input: "conv_pw_4_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_119"
   op: "VarIsInitializedOp"
-  input: "conv_cat/kernel"
+  input: "conv_pw_13/kernel"
 }
 node {
   name: "VarIsInitializedOp_120"
   op: "VarIsInitializedOp"
-  input: "conv_pw_8_bn/beta"
+  input: "conv_pw_10_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_121"
   op: "VarIsInitializedOp"
-  input: "conv_pw_4_bn/gamma"
+  input: "conv_pw_6/kernel"
 }
 node {
   name: "VarIsInitializedOp_122"
   op: "VarIsInitializedOp"
-  input: "conv_pw_1_bn/moving_mean"
+  input: "conv_pw_10_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_123"
   op: "VarIsInitializedOp"
-  input: "conv_dw_3/depthwise_kernel"
+  input: "conv_pw_10_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_124"
   op: "VarIsInitializedOp"
-  input: "conv_pw_1_bn/gamma"
+  input: "conv_pw_11_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_125"
   op: "VarIsInitializedOp"
-  input: "conv_pw_8_bn/moving_mean"
+  input: "conv_dw_3/depthwise_kernel"
 }
 node {
   name: "VarIsInitializedOp_126"
   op: "VarIsInitializedOp"
-  input: "conv_pw_1_bn/beta"
+  input: "conv_pw_11_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_127"
   op: "VarIsInitializedOp"
-  input: "conv_dw_5_bn/beta"
+  input: "conv_pw_11_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_128"
   op: "VarIsInitializedOp"
-  input: "conv_pw_6_bn/moving_mean"
+  input: "conv_pw_4_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_129"
   op: "VarIsInitializedOp"
-  input: "conv_pw_12/kernel"
+  input: "conv_dw_5_bn/beta"
 }
 node {
   name: "VarIsInitializedOp_130"
   op: "VarIsInitializedOp"
-  input: "conv_dw_13_bn/gamma"
+  input: "conv_pw_6_bn/moving_mean"
 }
 node {
   name: "VarIsInitializedOp_131"
   op: "VarIsInitializedOp"
-  input: "conv_pw_4/kernel"
+  input: "conv_pw_12/kernel"
 }
 node {
   name: "VarIsInitializedOp_132"
   op: "VarIsInitializedOp"
-  input: "conv_pw_4_bn/moving_variance"
+  input: "conv_pw_4_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_133"
   op: "VarIsInitializedOp"
-  input: "conv_pw_13_bn/beta"
+  input: "conv_dw_5_bn/gamma"
 }
 node {
   name: "VarIsInitializedOp_134"
   op: "VarIsInitializedOp"
-  input: "conv_pw_6_bn/moving_variance"
+  input: "conv_dw_5_bn/moving_variance"
 }
 node {
   name: "VarIsInitializedOp_135"
   op: "VarIsInitializedOp"
-  input: "conv_pw_4_bn/moving_mean"
+  input: "conv_reg/bias"
 }
 node {
   name: "init"
@@ -95807,7 +95807,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\001\000\000\000\001\000\000\000\000\002\000\0007\000\000\000"
+        tensor_content: "\001\000\000\000\001\000\000\000\000\002\000\0006\000\000\000"
       }
     }
   }
@@ -95888,7 +95888,7 @@ node {
           size: 512
         }
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -95960,7 +95960,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
           dim {
-            size: 55
+            size: 54
           }
         }
         float_val: 0.0
@@ -95996,7 +95996,7 @@ node {
     value {
       shape {
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -106433,7 +106433,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\001\000\000\000\001\000\000\000\000\002\000\0007\000\000\000"
+        tensor_content: "\001\000\000\000\001\000\000\000\000\002\000\0006\000\000\000"
       }
     }
   }
@@ -106514,7 +106514,7 @@ node {
           size: 512
         }
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -106586,7 +106586,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
           dim {
-            size: 55
+            size: 54
           }
         }
         float_val: 0.0
@@ -106622,7 +106622,7 @@ node {
     value {
       shape {
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -158596,1392 +158596,1392 @@ node {
 node {
   name: "training/VarIsInitializedOp"
   op: "VarIsInitializedOp"
-  input: "Adam/beta_1"
+  input: "training/Adam/m_56_1"
 }
 node {
   name: "training/VarIsInitializedOp_1"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_3_1"
+  input: "training/Adam/v_43_1"
 }
 node {
   name: "training/VarIsInitializedOp_2"
   op: "VarIsInitializedOp"
-  input: "Adam/decay"
+  input: "training/Adam/v_42_1"
 }
 node {
   name: "training/VarIsInitializedOp_3"
   op: "VarIsInitializedOp"
-  input: "Adam/beta_2"
+  input: "training/Adam/v_27_1"
 }
 node {
   name: "training/VarIsInitializedOp_4"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_72_1"
+  input: "training/Adam/v_75_1"
 }
 node {
   name: "training/VarIsInitializedOp_5"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_51_1"
+  input: "training/Adam/v_4_1"
 }
 node {
   name: "training/VarIsInitializedOp_6"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_75_1"
+  input: "training/Adam/vhat_25_1"
 }
 node {
   name: "training/VarIsInitializedOp_7"
   op: "VarIsInitializedOp"
-  input: "count_1"
+  input: "training/Adam/vhat_84_1"
 }
 node {
   name: "training/VarIsInitializedOp_8"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_32_1"
+  input: "training/Adam/v_28_1"
 }
 node {
   name: "training/VarIsInitializedOp_9"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_67_1"
+  input: "training/Adam/v_76_1"
 }
 node {
   name: "training/VarIsInitializedOp_10"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_66_1"
+  input: "training/Adam/vhat_23_1"
 }
 node {
   name: "training/VarIsInitializedOp_11"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_54_1"
+  input: "training/Adam/m_26_1"
 }
 node {
   name: "training/VarIsInitializedOp_12"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_74_1"
+  input: "training/Adam/m_50_1"
 }
 node {
   name: "training/VarIsInitializedOp_13"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_60_1"
+  input: "training/Adam/vhat_10_1"
 }
 node {
   name: "training/VarIsInitializedOp_14"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_64_1"
+  input: "training/Adam/vhat_82_1"
 }
 node {
   name: "training/VarIsInitializedOp_15"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_52_1"
+  input: "training/Adam/m_27_1"
 }
 node {
   name: "training/VarIsInitializedOp_16"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_76_1"
+  input: "training/Adam/m_51_1"
 }
 node {
   name: "training/VarIsInitializedOp_17"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_80_1"
+  input: "training/Adam/vhat_26_1"
 }
 node {
   name: "training/VarIsInitializedOp_18"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_32_1"
+  input: "training/Adam/v_29_1"
 }
 node {
   name: "training/VarIsInitializedOp_19"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_4_1"
+  input: "training/Adam/v_77_1"
 }
 node {
   name: "training/VarIsInitializedOp_20"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_73_1"
+  input: "training/Adam/vhat_85_1"
 }
 node {
   name: "training/VarIsInitializedOp_21"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_61_1"
+  input: "training/Adam/m_28_1"
 }
 node {
   name: "training/VarIsInitializedOp_22"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_33_1"
+  input: "training/Adam/m_52_1"
 }
 node {
   name: "training/VarIsInitializedOp_23"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_81_1"
+  input: "training/Adam/v_35_1"
 }
 node {
   name: "training/VarIsInitializedOp_24"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_68_1"
+  input: "training/Adam/v_44_1"
 }
 node {
   name: "training/VarIsInitializedOp_25"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_7_1"
+  input: "training/Adam/vhat_24_1"
 }
 node {
   name: "training/VarIsInitializedOp_26"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_34_1"
+  input: "training/Adam/vhat_11_1"
 }
 node {
   name: "training/VarIsInitializedOp_27"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_82_1"
+  input: "training/Adam/vhat_83_1"
 }
 node {
   name: "training/VarIsInitializedOp_28"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_65_1"
+  input: "training/Adam/v_11_1"
 }
 node {
   name: "training/VarIsInitializedOp_29"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_63_1"
+  input: "training/Adam/v_5_1"
 }
 node {
   name: "training/VarIsInitializedOp_30"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_6_1"
+  input: "training/Adam/v_36_1"
 }
 node {
   name: "training/VarIsInitializedOp_31"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_9_1"
+  input: "training/Adam/m_57_1"
 }
 node {
   name: "training/VarIsInitializedOp_32"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_33_1"
+  input: "training/Adam/v_37_1"
 }
 node {
   name: "training/VarIsInitializedOp_33"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_8_1"
+  input: "training/Adam/m_58_1"
 }
 node {
   name: "training/VarIsInitializedOp_34"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_5_1"
+  input: "Adam/iterations"
 }
 node {
   name: "training/VarIsInitializedOp_35"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_55_1"
+  input: "Adam/learning_rate"
 }
 node {
   name: "training/VarIsInitializedOp_36"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_34_1"
+  input: "training/Adam/v_6_1"
 }
 node {
   name: "training/VarIsInitializedOp_37"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_53_1"
+  input: "count_1"
 }
 node {
   name: "training/VarIsInitializedOp_38"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_77_1"
+  input: "total"
 }
 node {
   name: "training/VarIsInitializedOp_39"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_16_1"
+  input: "training/Adam/vhat_40_1"
 }
 node {
   name: "training/VarIsInitializedOp_40"
   op: "VarIsInitializedOp"
-  input: "total_5"
+  input: "training/Adam/vhat_3_1"
 }
 node {
   name: "training/VarIsInitializedOp_41"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_80_1"
+  input: "training/Adam/m_68_1"
 }
 node {
   name: "training/VarIsInitializedOp_42"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_59_1"
+  input: "training/Adam/vhat_19_1"
 }
 node {
   name: "training/VarIsInitializedOp_43"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_84_1"
+  input: "training/Adam/m_66_1"
 }
 node {
   name: "training/VarIsInitializedOp_44"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_17_1"
+  input: "training/Adam/m_35_1"
 }
 node {
   name: "training/VarIsInitializedOp_45"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_50_1"
+  input: "training/Adam/v_13_1"
 }
 node {
   name: "training/VarIsInitializedOp_46"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_82_1"
+  input: "training/Adam/vhat_78_1"
 }
 node {
   name: "training/VarIsInitializedOp_47"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_45_1"
+  input: "count"
 }
 node {
   name: "training/VarIsInitializedOp_48"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_69_1"
+  input: "training/Adam/vhat_41_1"
 }
 node {
   name: "training/VarIsInitializedOp_49"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_51_1"
+  input: "training/Adam/vhat_47_1"
 }
 node {
   name: "training/VarIsInitializedOp_50"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_85_1"
+  input: "training/Adam/vhat_4_1"
 }
 node {
   name: "training/VarIsInitializedOp_51"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_52_1"
+  input: "training/Adam/m_20_1"
 }
 node {
   name: "training/VarIsInitializedOp_52"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_83_1"
+  input: "training/Adam/m_74_1"
 }
 node {
   name: "training/VarIsInitializedOp_53"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_46_1"
+  input: "training/Adam/m_18_1"
 }
 node {
   name: "training/VarIsInitializedOp_54"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_70_1"
+  input: "training/Adam/m_10_1"
 }
 node {
   name: "training/VarIsInitializedOp_55"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_81_1"
+  input: "training/Adam/m_67_1"
 }
 node {
   name: "training/VarIsInitializedOp_56"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_60_1"
+  input: "training/Adam/m_75_1"
 }
 node {
   name: "training/VarIsInitializedOp_57"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_82_1"
+  input: "training/Adam/vhat_56_1"
 }
 node {
   name: "training/VarIsInitializedOp_58"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_18_1"
+  input: "training/Adam/m_76_1"
 }
 node {
   name: "training/VarIsInitializedOp_59"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_3_1"
+  input: "training/Adam/vhat_48_1"
 }
 node {
   name: "training/VarIsInitializedOp_60"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_56_1"
+  input: "training/Adam/m_19_1"
 }
 node {
   name: "training/VarIsInitializedOp_61"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_38_1"
+  input: "training/Adam/v_14_1"
 }
 node {
   name: "training/VarIsInitializedOp_62"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_27_1"
+  input: "training/Adam/v_12_1"
 }
 node {
   name: "training/VarIsInitializedOp_63"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_75_1"
+  input: "training/Adam/m_83_1"
 }
 node {
   name: "training/VarIsInitializedOp_64"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_35_1"
+  input: "training/Adam/m_11_1"
 }
 node {
   name: "training/VarIsInitializedOp_65"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_4_1"
+  input: "training/Adam/vhat_20_1"
 }
 node {
   name: "training/VarIsInitializedOp_66"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_25_1"
+  input: "training/Adam/m_36_1"
 }
 node {
   name: "training/VarIsInitializedOp_67"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_28_1"
+  input: "training/Adam/vhat_79_1"
 }
 node {
   name: "training/VarIsInitializedOp_68"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_76_1"
+  input: "training/Adam/vhat_57_1"
 }
 node {
   name: "training/VarIsInitializedOp_69"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_23_1"
+  input: "training/Adam/m_84_1"
 }
 node {
   name: "training/VarIsInitializedOp_70"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_4_1"
+  input: "training/Adam/vhat_42_1"
 }
 node {
   name: "training/VarIsInitializedOp_71"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_26_1"
+  input: "training/Adam/vhat_5_1"
 }
 node {
   name: "training/VarIsInitializedOp_72"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_74_1"
+  input: "total_2"
 }
 node {
   name: "training/VarIsInitializedOp_73"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_10_1"
+  input: "training/Adam/m_37_1"
 }
 node {
   name: "training/VarIsInitializedOp_74"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_19_1"
+  input: "training/Adam/m_45_1"
 }
 node {
   name: "training/VarIsInitializedOp_75"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_39_1"
+  input: "training/Adam/v_62_1"
 }
 node {
   name: "training/VarIsInitializedOp_76"
   op: "VarIsInitializedOp"
-  input: "count_5"
+  input: "training/Adam/m_14_1"
 }
 node {
   name: "training/VarIsInitializedOp_77"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_27_1"
+  input: "training/Adam/m_46_1"
 }
 node {
   name: "training/VarIsInitializedOp_78"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_75_1"
+  input: "training/Adam/v_51_1"
 }
 node {
   name: "training/VarIsInitializedOp_79"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_26_1"
+  input: "training/Adam/vhat_49_1"
 }
 node {
   name: "training/VarIsInitializedOp_80"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_29_1"
+  input: "training/Adam/m_12_1"
 }
 node {
   name: "training/VarIsInitializedOp_81"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_77_1"
+  input: "training/Adam/vhat_12_1"
 }
 node {
   name: "training/VarIsInitializedOp_82"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_28_1"
+  input: "training/Adam/v_52_1"
 }
 node {
   name: "training/VarIsInitializedOp_83"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_76_1"
+  input: "training/Adam/vhat_34_1"
 }
 node {
   name: "training/VarIsInitializedOp_84"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_35_1"
+  input: "training/Adam/m_47_1"
 }
 node {
   name: "training/VarIsInitializedOp_85"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_24_1"
+  input: "training/Adam/m_13_1"
 }
 node {
   name: "training/VarIsInitializedOp_86"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_11_1"
+  input: "training/Adam/vhat_50_1"
 }
 node {
   name: "training/VarIsInitializedOp_87"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_20_1"
+  input: "training/Adam/m_38_1"
 }
 node {
   name: "training/VarIsInitializedOp_88"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_5_1"
+  input: "training/Adam/v_83_1"
 }
 node {
   name: "training/VarIsInitializedOp_89"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_18_1"
+  input: "training/Adam/v_53_1"
 }
 node {
   name: "training/VarIsInitializedOp_90"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_36_1"
+  input: "training/Adam/vhat_13_1"
 }
 node {
   name: "training/VarIsInitializedOp_91"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_57_1"
+  input: "total_4"
 }
 node {
   name: "training/VarIsInitializedOp_92"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_11_1"
+  input: "training/Adam/vhat_35_1"
 }
 node {
   name: "training/VarIsInitializedOp_93"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_37_1"
+  input: "count_4"
 }
 node {
   name: "training/VarIsInitializedOp_94"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_36_1"
+  input: "count_2"
 }
 node {
   name: "training/VarIsInitializedOp_95"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_58_1"
+  input: "training/Adam/v_84_1"
 }
 node {
   name: "training/VarIsInitializedOp_96"
   op: "VarIsInitializedOp"
-  input: "Adam/iterations"
+  input: "count_3"
 }
 node {
   name: "training/VarIsInitializedOp_97"
   op: "VarIsInitializedOp"
-  input: "Adam/learning_rate"
+  input: "training/Adam/v_63_1"
 }
 node {
   name: "training/VarIsInitializedOp_98"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_6_1"
+  input: "total_1"
 }
 node {
   name: "training/VarIsInitializedOp_99"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_5_1"
+  input: "total_3"
 }
 node {
   name: "training/VarIsInitializedOp_100"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_12_1"
+  input: "training/Adam/v_64_1"
 }
 node {
   name: "training/VarIsInitializedOp_101"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_43_1"
+  input: "training/Adam/v_21_1"
 }
 node {
   name: "training/VarIsInitializedOp_102"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_68_1"
+  input: "training/Adam/m_21_1"
 }
 node {
   name: "training/VarIsInitializedOp_103"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_42_1"
+  input: "training/Adam/vhat_64_1"
 }
 node {
   name: "training/VarIsInitializedOp_104"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_19_1"
+  input: "training/Adam/v_15_1"
 }
 node {
   name: "training/VarIsInitializedOp_105"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_51_1"
+  input: "training/Adam/vhat_27_1"
 }
 node {
   name: "training/VarIsInitializedOp_106"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_66_1"
+  input: "training/Adam/m_44_1"
 }
 node {
   name: "training/VarIsInitializedOp_107"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_78_1"
+  input: "training/Adam/vhat_43_1"
 }
 node {
   name: "training/VarIsInitializedOp_108"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_52_1"
+  input: "training/Adam/vhat_62_1"
 }
 node {
   name: "training/VarIsInitializedOp_109"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_13_1"
+  input: "training/Adam/m_42_1"
 }
 node {
   name: "training/VarIsInitializedOp_110"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_47_1"
+  input: "training/Adam/v_7_1"
 }
 node {
   name: "training/VarIsInitializedOp_111"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_20_1"
+  input: "training/Adam/vhat_6_1"
 }
 node {
   name: "training/VarIsInitializedOp_112"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_18_1"
+  input: "training/Adam/vhat_73_1"
 }
 node {
   name: "training/VarIsInitializedOp_113"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_10_1"
+  input: "training/Adam/vhat_36_1"
 }
 node {
   name: "training/VarIsInitializedOp_114"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_67_1"
+  input: "training/Adam/m_40_1"
 }
 node {
   name: "training/VarIsInitializedOp_115"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_56_1"
+  input: "training/Adam/vhat_71_1"
 }
 node {
   name: "training/VarIsInitializedOp_116"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_53_1"
+  input: "training/Adam/vhat_28_1"
 }
 node {
   name: "training/VarIsInitializedOp_117"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_13_1"
+  input: "training/Adam/vhat_58_1"
 }
 node {
   name: "training/VarIsInitializedOp_118"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_44_1"
+  input: "training/Adam/v_30_1"
 }
 node {
   name: "training/VarIsInitializedOp_119"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_48_1"
+  input: "training/Adam/vhat_63_1"
 }
 node {
   name: "training/VarIsInitializedOp_120"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_19_1"
+  input: "training/Adam/m_43_1"
 }
 node {
   name: "training/VarIsInitializedOp_121"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_14_1"
+  input: "training/Adam/vhat_21_1"
 }
 node {
   name: "training/VarIsInitializedOp_122"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_12_1"
+  input: "training/Adam/v_31_1"
 }
 node {
   name: "training/VarIsInitializedOp_123"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_83_1"
+  input: "training/Adam/vhat_74_1"
 }
 node {
   name: "training/VarIsInitializedOp_124"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_11_1"
+  input: "training/Adam/v_16_1"
 }
 node {
   name: "training/VarIsInitializedOp_125"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_20_1"
+  input: "training/Adam/vhat_80_1"
 }
 node {
   name: "training/VarIsInitializedOp_126"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_79_1"
+  input: "training/Adam/vhat_65_1"
 }
 node {
   name: "training/VarIsInitializedOp_127"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_57_1"
+  input: "training/Adam/m_53_1"
 }
 node {
   name: "training/VarIsInitializedOp_128"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_84_1"
+  input: "training/Adam/m_77_1"
 }
 node {
   name: "training/VarIsInitializedOp_129"
   op: "VarIsInitializedOp"
-  input: "total"
+  input: "training/Adam/vhat_37_1"
 }
 node {
   name: "training/VarIsInitializedOp_130"
   op: "VarIsInitializedOp"
-  input: "total_2"
+  input: "training/Adam/v_59_1"
 }
 node {
   name: "training/VarIsInitializedOp_131"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_37_1"
+  input: "training/Adam/vhat_72_1"
 }
 node {
   name: "training/VarIsInitializedOp_132"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_62_1"
+  input: "training/Adam/v_22_1"
 }
 node {
   name: "training/VarIsInitializedOp_133"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_43_1"
+  input: "training/Adam/vhat_59_1"
 }
 node {
   name: "training/VarIsInitializedOp_134"
   op: "VarIsInitializedOp"
-  input: "count"
+  input: "training/Adam/m_41_1"
 }
 node {
   name: "training/VarIsInitializedOp_135"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_71_1"
+  input: "training/Adam/m_39_1"
 }
 node {
   name: "training/VarIsInitializedOp_136"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_34_1"
+  input: "training/Adam/vhat_22_1"
 }
 node {
   name: "training/VarIsInitializedOp_137"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_30_1"
+  input: "training/Adam/m_22_1"
 }
 node {
   name: "training/VarIsInitializedOp_138"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_31_1"
+  input: "training/Adam/v_8_1"
 }
 node {
   name: "training/VarIsInitializedOp_139"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_38_1"
+  input: "training/Adam/v_17_1"
 }
 node {
   name: "training/VarIsInitializedOp_140"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_83_1"
+  input: "training/Adam/v_60_1"
 }
 node {
   name: "training/VarIsInitializedOp_141"
   op: "VarIsInitializedOp"
-  input: "total_4"
+  input: "training/Adam/v_61_1"
 }
 node {
   name: "training/VarIsInitializedOp_142"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_72_1"
+  input: "training/Adam/vhat_44_1"
 }
 node {
   name: "training/VarIsInitializedOp_143"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_35_1"
+  input: "training/Adam/m_0_1"
 }
 node {
   name: "training/VarIsInitializedOp_144"
   op: "VarIsInitializedOp"
-  input: "count_4"
+  input: "training/Adam/v_23_1"
 }
 node {
   name: "training/VarIsInitializedOp_145"
   op: "VarIsInitializedOp"
-  input: "count_2"
+  input: "training/Adam/m_1_1"
 }
 node {
   name: "training/VarIsInitializedOp_146"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_44_1"
+  input: "training/Adam/v_10_1"
 }
 node {
   name: "training/VarIsInitializedOp_147"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_84_1"
+  input: "training/Adam/vhat_7_1"
 }
 node {
   name: "training/VarIsInitializedOp_148"
   op: "VarIsInitializedOp"
-  input: "count_3"
+  input: "training/Adam/m_54_1"
 }
 node {
   name: "training/VarIsInitializedOp_149"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_63_1"
+  input: "training/Adam/m_78_1"
 }
 node {
   name: "training/VarIsInitializedOp_150"
   op: "VarIsInitializedOp"
-  input: "total_1"
+  input: "training/Adam/vhat_81_1"
 }
 node {
   name: "training/VarIsInitializedOp_151"
   op: "VarIsInitializedOp"
-  input: "total_3"
+  input: "training/Adam/v_9_1"
 }
 node {
   name: "training/VarIsInitializedOp_152"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_64_1"
+  input: "training/Adam/m_23_1"
 }
 node {
   name: "training/VarIsInitializedOp_153"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_21_1"
+  input: "training/Adam/m_2_1"
 }
 node {
   name: "training/VarIsInitializedOp_154"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_40_1"
+  input: "training/Adam/vhat_29_1"
 }
 node {
   name: "training/VarIsInitializedOp_155"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_64_1"
+  input: "training/Adam/vhat_66_1"
 }
 node {
   name: "training/VarIsInitializedOp_156"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_61_1"
+  input: "training/Adam/m_79_1"
 }
 node {
   name: "training/VarIsInitializedOp_157"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_15_1"
+  input: "training/Adam/m_55_1"
 }
 node {
   name: "training/VarIsInitializedOp_158"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_45_1"
+  input: "training/Adam/m_15_1"
 }
 node {
   name: "training/VarIsInitializedOp_159"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_27_1"
+  input: "training/Adam/m_86_1"
 }
 node {
   name: "training/VarIsInitializedOp_160"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_44_1"
+  input: "training/Adam/v_48_1"
 }
 node {
   name: "training/VarIsInitializedOp_161"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_38_1"
+  input: "training/Adam/vhat_1_1"
 }
 node {
   name: "training/VarIsInitializedOp_162"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_62_1"
+  input: "training/Adam/v_47_1"
 }
 node {
   name: "training/VarIsInitializedOp_163"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_14_1"
+  input: "training/Adam/m_61_1"
 }
 node {
   name: "training/VarIsInitializedOp_164"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_46_1"
+  input: "training/Adam/m_69_1"
 }
 node {
   name: "training/VarIsInitializedOp_165"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_42_1"
+  input: "training/Adam/v_45_1"
 }
 node {
   name: "training/VarIsInitializedOp_166"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_7_1"
+  input: "training/Adam/v_38_1"
 }
 node {
   name: "training/VarIsInitializedOp_167"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_49_1"
+  input: "training/Adam/vhat_86_1"
 }
 node {
   name: "training/VarIsInitializedOp_168"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_73_1"
+  input: "training/Adam/m_25_1"
 }
 node {
   name: "training/VarIsInitializedOp_169"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_12_1"
+  input: "training/Adam/m_70_1"
 }
 node {
   name: "training/VarIsInitializedOp_170"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_40_1"
+  input: "training/Adam/v_50_1"
 }
 node {
   name: "training/VarIsInitializedOp_171"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_41_1"
+  input: "training/Adam/m_24_1"
 }
 node {
   name: "training/VarIsInitializedOp_172"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_65_1"
+  input: "training/Adam/m_85_1"
 }
 node {
   name: "training/VarIsInitializedOp_173"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_28_1"
+  input: "training/Adam/v_46_1"
 }
 node {
   name: "training/VarIsInitializedOp_174"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_63_1"
+  input: "training/Adam/v_54_1"
 }
 node {
   name: "training/VarIsInitializedOp_175"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_43_1"
+  input: "training/Adam/v_78_1"
 }
 node {
   name: "training/VarIsInitializedOp_176"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_47_1"
+  input: "training/Adam/m_71_1"
 }
 node {
   name: "training/VarIsInitializedOp_177"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_21_1"
+  input: "training/Adam/v_55_1"
 }
 node {
   name: "training/VarIsInitializedOp_178"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_13_1"
+  input: "training/Adam/v_79_1"
 }
 node {
   name: "training/VarIsInitializedOp_179"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_50_1"
+  input: "training/Adam/vhat_2_1"
 }
 node {
   name: "training/VarIsInitializedOp_180"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_74_1"
+  input: "training/Adam/m_62_1"
 }
 node {
   name: "training/VarIsInitializedOp_181"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_62_1"
+  input: "training/Adam/vhat_8_1"
 }
 node {
   name: "training/VarIsInitializedOp_182"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_16_1"
+  input: "training/Adam/vhat_67_1"
 }
 node {
   name: "training/VarIsInitializedOp_183"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_53_1"
+  input: "training/Adam/m_29_1"
 }
 node {
   name: "training/VarIsInitializedOp_184"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_77_1"
+  input: "training/Adam/v_49_1"
 }
 node {
   name: "training/VarIsInitializedOp_185"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_59_1"
+  input: "training/Adam/m_16_1"
 }
 node {
   name: "training/VarIsInitializedOp_186"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_41_1"
+  input: "training/Adam/vhat_68_1"
 }
 node {
   name: "training/VarIsInitializedOp_187"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_39_1"
+  input: "training/Adam/v_39_1"
 }
 node {
   name: "training/VarIsInitializedOp_188"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_22_1"
+  input: "training/Adam/m_17_1"
 }
 node {
   name: "training/VarIsInitializedOp_189"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_22_1"
+  input: "training/Adam/m_30_1"
 }
 node {
   name: "training/VarIsInitializedOp_190"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_8_1"
+  input: "training/Adam/vhat_9_1"
 }
 node {
   name: "training/VarIsInitializedOp_191"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_17_1"
+  input: "training/Adam/m_31_1"
 }
 node {
   name: "training/VarIsInitializedOp_192"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_60_1"
+  input: "training/Adam/v_40_1"
 }
 node {
   name: "training/VarIsInitializedOp_193"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_61_1"
+  input: "Adam/beta_1"
 }
 node {
   name: "training/VarIsInitializedOp_194"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_0_1"
+  input: "training/Adam/v_0_1"
 }
 node {
   name: "training/VarIsInitializedOp_195"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_39_1"
+  input: "Adam/decay"
 }
 node {
   name: "training/VarIsInitializedOp_196"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_1_1"
+  input: "Adam/beta_2"
 }
 node {
   name: "training/VarIsInitializedOp_197"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_10_1"
+  input: "training/Adam/vhat_0_1"
 }
 node {
   name: "training/VarIsInitializedOp_198"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_54_1"
+  input: "training/Adam/v_71_1"
 }
 node {
   name: "training/VarIsInitializedOp_199"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_78_1"
+  input: "total_5"
 }
 node {
   name: "training/VarIsInitializedOp_200"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_9_1"
+  input: "training/Adam/vhat_51_1"
 }
 node {
   name: "training/VarIsInitializedOp_201"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_23_1"
+  input: "training/Adam/v_69_1"
 }
 node {
   name: "training/VarIsInitializedOp_202"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_42_1"
+  input: "training/Adam/m_80_1"
 }
 node {
   name: "training/VarIsInitializedOp_203"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_66_1"
+  input: "training/Adam/v_86_1"
 }
 node {
   name: "training/VarIsInitializedOp_204"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_2_1"
+  input: "training/Adam/vhat_30_1"
 }
 node {
   name: "training/VarIsInitializedOp_205"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_29_1"
+  input: "training/Adam/v_26_1"
 }
 node {
   name: "training/VarIsInitializedOp_206"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_79_1"
+  input: "training/Adam/m_64_1"
 }
 node {
   name: "training/VarIsInitializedOp_207"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_40_1"
+  input: "training/Adam/m_72_1"
 }
 node {
   name: "training/VarIsInitializedOp_208"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_55_1"
+  input: "training/Adam/v_24_1"
 }
 node {
   name: "training/VarIsInitializedOp_209"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_0_1"
+  input: "training/Adam/v_41_1"
 }
 node {
   name: "training/VarIsInitializedOp_210"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_21_1"
+  input: "training/Adam/v_65_1"
 }
 node {
   name: "training/VarIsInitializedOp_211"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_15_1"
+  input: "training/Adam/v_70_1"
 }
 node {
   name: "training/VarIsInitializedOp_212"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_86_1"
+  input: "training/Adam/vhat_52_1"
 }
 node {
   name: "training/VarIsInitializedOp_213"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_0_1"
+  input: "training/Adam/m_73_1"
 }
 node {
   name: "training/VarIsInitializedOp_214"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_1_1"
+  input: "training/Adam/v_1_1"
 }
 node {
   name: "training/VarIsInitializedOp_215"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_47_1"
+  input: "training/Adam/v_32_1"
 }
 node {
   name: "training/VarIsInitializedOp_216"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_69_1"
+  input: "training/Adam/v_56_1"
 }
 node {
   name: "training/VarIsInitializedOp_217"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_45_1"
+  input: "training/Adam/v_25_1"
 }
 node {
   name: "training/VarIsInitializedOp_218"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_67_1"
+  input: "training/Adam/v_33_1"
 }
 node {
   name: "training/VarIsInitializedOp_219"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_86_1"
+  input: "training/Adam/v_57_1"
 }
 node {
   name: "training/VarIsInitializedOp_220"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_25_1"
+  input: "training/Adam/v_34_1"
 }
 node {
   name: "training/VarIsInitializedOp_221"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_70_1"
+  input: "training/Adam/v_58_1"
 }
 node {
   name: "training/VarIsInitializedOp_222"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_86_1"
+  input: "training/Adam/m_65_1"
 }
 node {
   name: "training/VarIsInitializedOp_223"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_6_1"
+  input: "training/Adam/m_63_1"
 }
 node {
   name: "training/VarIsInitializedOp_224"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_36_1"
+  input: "training/Adam/v_2_1"
 }
 node {
   name: "training/VarIsInitializedOp_225"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_24_1"
+  input: "training/Adam/v_85_1"
 }
 node {
   name: "training/VarIsInitializedOp_226"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_85_1"
+  input: "training/Adam/m_81_1"
 }
 node {
   name: "training/VarIsInitializedOp_227"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_46_1"
+  input: "training/Adam/vhat_31_1"
 }
 node {
   name: "training/VarIsInitializedOp_228"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_54_1"
+  input: "training/Adam/m_82_1"
 }
 node {
   name: "training/VarIsInitializedOp_229"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_78_1"
+  input: "training/Adam/v_3_1"
 }
 node {
   name: "training/VarIsInitializedOp_230"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_71_1"
+  input: "training/Adam/vhat_53_1"
 }
 node {
   name: "training/VarIsInitializedOp_231"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_1_1"
+  input: "training/Adam/m_3_1"
 }
 node {
   name: "training/VarIsInitializedOp_232"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_2_1"
+  input: "training/Adam/v_72_1"
 }
 node {
   name: "training/VarIsInitializedOp_233"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_55_1"
+  input: "training/Adam/vhat_14_1"
 }
 node {
   name: "training/VarIsInitializedOp_234"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_79_1"
+  input: "training/Adam/vhat_75_1"
 }
 node {
   name: "training/VarIsInitializedOp_235"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_56_1"
+  input: "training/Adam/m_32_1"
 }
 node {
   name: "training/VarIsInitializedOp_236"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_8_1"
+  input: "training/Adam/v_74_1"
 }
 node {
   name: "training/VarIsInitializedOp_237"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_80_1"
+  input: "training/Adam/m_48_1"
 }
 node {
   name: "training/VarIsInitializedOp_238"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_29_1"
+  input: "training/Adam/vhat_76_1"
 }
 node {
   name: "training/VarIsInitializedOp_239"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_37_1"
+  input: "training/Adam/m_49_1"
 }
 node {
   name: "training/VarIsInitializedOp_240"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_16_1"
+  input: "training/Adam/vhat_45_1"
 }
 node {
   name: "training/VarIsInitializedOp_241"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_22_1"
+  input: "training/Adam/v_80_1"
 }
 node {
   name: "training/VarIsInitializedOp_242"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_2_1"
+  input: "training/Adam/vhat_15_1"
 }
 node {
   name: "training/VarIsInitializedOp_243"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_85_1"
+  input: "training/Adam/m_4_1"
 }
 node {
   name: "training/VarIsInitializedOp_244"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_68_1"
+  input: "training/Adam/vhat_32_1"
 }
 node {
   name: "training/VarIsInitializedOp_245"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_23_1"
+  input: "training/Adam/v_73_1"
 }
 node {
   name: "training/VarIsInitializedOp_246"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_17_1"
+  input: "training/Adam/v_81_1"
 }
 node {
   name: "training/VarIsInitializedOp_247"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_7_1"
+  input: "training/Adam/v_82_1"
 }
 node {
   name: "training/VarIsInitializedOp_248"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_30_1"
+  input: "training/Adam/vhat_46_1"
 }
 node {
   name: "training/VarIsInitializedOp_249"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_9_1"
+  input: "training/Adam/m_6_1"
 }
 node {
   name: "training/VarIsInitializedOp_250"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_81_1"
+  input: "training/Adam/m_33_1"
 }
 node {
   name: "training/VarIsInitializedOp_251"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_3_1"
+  input: "training/Adam/m_5_1"
 }
 node {
   name: "training/VarIsInitializedOp_252"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_31_1"
+  input: "training/Adam/m_34_1"
 }
 node {
   name: "training/VarIsInitializedOp_253"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_48_1"
+  input: "training/Adam/vhat_33_1"
 }
 node {
   name: "training/VarIsInitializedOp_254"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_71_1"
+  input: "training/Adam/vhat_77_1"
 }
 node {
   name: "training/VarIsInitializedOp_255"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_69_1"
+  input: "training/Adam/vhat_16_1"
 }
 node {
   name: "training/VarIsInitializedOp_256"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_14_1"
+  input: "training/Adam/v_67_1"
 }
 node {
   name: "training/VarIsInitializedOp_257"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_30_1"
+  input: "training/Adam/v_66_1"
 }
 node {
   name: "training/VarIsInitializedOp_258"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_26_1"
+  input: "training/Adam/vhat_38_1"
 }
 node {
   name: "training/VarIsInitializedOp_259"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_50_1"
+  input: "training/Adam/m_59_1"
 }
 node {
   name: "training/VarIsInitializedOp_260"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_48_1"
+  input: "training/Adam/vhat_54_1"
 }
 node {
   name: "training/VarIsInitializedOp_261"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_72_1"
+  input: "training/Adam/vhat_60_1"
 }
 node {
   name: "training/VarIsInitializedOp_262"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_24_1"
+  input: "training/Adam/vhat_17_1"
 }
 node {
   name: "training/VarIsInitializedOp_263"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_41_1"
+  input: "training/Adam/v_19_1"
 }
 node {
   name: "training/VarIsInitializedOp_264"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_70_1"
+  input: "training/Adam/vhat_39_1"
 }
 node {
   name: "training/VarIsInitializedOp_265"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_65_1"
+  input: "training/Adam/vhat_69_1"
 }
 node {
   name: "training/VarIsInitializedOp_266"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_49_1"
+  input: "count_5"
 }
 node {
   name: "training/VarIsInitializedOp_267"
   op: "VarIsInitializedOp"
-  input: "training/Adam/m_73_1"
+  input: "training/Adam/vhat_61_1"
 }
 node {
   name: "training/VarIsInitializedOp_268"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_58_1"
+  input: "training/Adam/v_68_1"
 }
 node {
   name: "training/VarIsInitializedOp_269"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_15_1"
+  input: "training/Adam/m_7_1"
 }
 node {
   name: "training/VarIsInitializedOp_270"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_32_1"
+  input: "training/Adam/vhat_70_1"
 }
 node {
   name: "training/VarIsInitializedOp_271"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_25_1"
+  input: "training/Adam/v_20_1"
 }
 node {
   name: "training/VarIsInitializedOp_272"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_49_1"
+  input: "training/Adam/v_18_1"
 }
 node {
   name: "training/VarIsInitializedOp_273"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_57_1"
+  input: "training/Adam/m_9_1"
 }
 node {
   name: "training/VarIsInitializedOp_274"
   op: "VarIsInitializedOp"
-  input: "training/Adam/v_58_1"
+  input: "training/Adam/m_8_1"
 }
 node {
   name: "training/VarIsInitializedOp_275"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_59_1"
+  input: "training/Adam/m_60_1"
 }
 node {
   name: "training/VarIsInitializedOp_276"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_31_1"
+  input: "training/Adam/vhat_55_1"
 }
 node {
   name: "training/VarIsInitializedOp_277"
   op: "VarIsInitializedOp"
-  input: "training/Adam/vhat_33_1"
+  input: "training/Adam/vhat_18_1"
 }
 node {
   name: "training/init"
@@ -164469,7 +164469,7 @@ node {
           size: 512
         }
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -164513,7 +164513,7 @@ node {
     value {
       shape {
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -168567,7 +168567,7 @@ node {
           size: 512
         }
         dim {
-          size: 55
+          size: 54
         }
       }
     }
@@ -168611,7 +168611,7 @@ node {
     value {
       shape {
         dim {
-          size: 55
+          size: 54
         }
       }
     }
