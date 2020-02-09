@@ -1,5 +1,14 @@
 # Second Stage
 
+neue Farben hinzufügen:
+ros_ws/src/Rolling_Swarm/sphero_node/nodes/sphero.py
+
+nn_tracking_node.h $\rightarrow$ farben
+
+nn_tracking_node.cpp -> Anzahl erhöhen
+
+
+
 ## to do 
 - RecordInspector -> Anzahl Daten pro Grad 
 - unterschiede experimenttypen
@@ -35,7 +44,7 @@ dir
 |-- |-- inference  
 |-- |-- second_stage (h5 Modelle)
 
-		
+
 [Manual protobuf-compiler installation and usage] (https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md#manual-protobuf-compiler-installation-and-usage)
 sonst fehlt string_int_label_map_pb2 in object_detection
 
