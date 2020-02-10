@@ -200,7 +200,8 @@ class TensorBoardCustom(Callback):
 
     def add_custom_metrics(self, epoch):
         y_pred = self.model.predict(self.validation_data[0])
-        # [1] -> Y; [2] -> Z
+        y_pred = y_pred[0]
+        # [0]->cat, [1]->reg, [2]->bin
         y_targ = self.validation_data[1]
         y_targ_onehot = np.argmax(y_targ, axis=1)
         y_pred_onehot = np.argmax(y_pred, axis=1)
@@ -249,7 +250,8 @@ class TensorBoardCustom(Callback):
         # and https://stackoverflow.com/questions/37902705/how-to-manually-create-a-tf-summary
         # and https://gist.github.com/gyglim/1f8dfb1b5c82627ae3efcfbbadb9f514#file-tensorboard_logging-py-L41
         y_pred = self.model.predict(self.validation_data[0])
-        # [1] -> Y; [2] -> Z
+        y_pred = y_pred[0]
+        # [0]->cat, [1]->reg, [2]->bin
         y_targ = self.validation_data[1]
         y_targ_onehot = np.argmax(y_targ, axis=1)
         y_pred_onehot = np.argmax(y_pred, axis=1)
