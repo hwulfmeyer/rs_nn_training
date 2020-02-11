@@ -24,14 +24,14 @@ from second_stage_utils import *
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 #MODEL = '/home/josi/OvGU/Rolling Swarm/output/5_pos/reg/rot6/b=4096/2020-01-16-08-05-r1/model-final.h5'
-MODEL = '/home/josi/OvGU/Rolling Swarm/output/old_secondstage/bin/2020-02-08-11-44-r1/model-final.h5'
-OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/13_colours/'
-TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/13_colours/training_rot9_9colors.record'
-EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/13_colours/val/'
-LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/data/13_colours/label_map.pbtxt'
+MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/old_second_stage/new_labels/cat/model-final.h5'
+OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/13_colours_lab/'
+TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/13_colours_lab/training_rot9_9colors.record'
+EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/13_colours_lab/eval/'
+LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/robot_label_map_komplett.pbtxt'
 TRAIN_OR_VAL = 'val'
-MODE = "regression"
-#MODE = "classification"
+#MODE = "regression"
+MODE = "classification"
 TYPES = ['sphero']
 IMG_SIZE = 35
 
