@@ -1,3 +1,25 @@
+'''
+This script converts a .h5 Keras model into a Tensorflow .pb file.
+Attribution: This script was adapted from https://github.com/amir-abdi/keras_to_tensorflow
+MIT License
+Copyright (c) 2017 bitbionic
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
+
 import os
 import os.path as osp
 import argparse
@@ -9,7 +31,7 @@ from keras import backend as K
 
 import sys
 sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/")
-from rs_nn_training.SecondStage_colab.second_stage_utils import *
+from rs_nn_training.SecondStage.second_stage_utils import *
 
 def angle_mae(y_true, y_pred):
     return K.mean(K.abs(angle_diff2(y_true, y_pred)), axis=-1)
@@ -34,7 +56,8 @@ def convertGraph( modelPath, outdir, numoutputs, prefix, name):
 
     K.set_learning_phase(0)
 
-    net_model = load_model(modelPath, custom_objects = {'angle_bin_mae' : angle_bin_mae, 'angle_bin_rmse' : angle_bin_rmse})
+    #'angle_bin_mae' : angle_bin_mae, 'angle_bin_rmse' : angle_bin_rmse, 
+    net_model = load_model(modelPath, custom_objects = {'angle_mse' : angle_mse, 'angle_mae' : angle_mae, 'angle_bin_error' : angle_bin_error})
 
     # Alias the outputs in the model - this sometimes makes them easier to access in TF
     pred = [None]*numoutputs

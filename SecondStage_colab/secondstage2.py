@@ -18,7 +18,7 @@ to do:
 
 # Commented out IPython magic to ensure Python compatibility.
 # %tensorflow_version 1.x
-!pip install tensorflow-gpu==1.15
+#!pip install tensorflow-gpu==1.15
 !pip install object-detection-core
 from object_detection.utils import dataset_util
 from object_detection.utils import label_map_util
@@ -58,18 +58,18 @@ from SecondStage_colab import file_utils
 sys.path.append('/content/gdrive/My Drive/SecondStage_colab/')
 os.environ['PYTHONPATH'] += ':/content/gdrive/My Drive/SecondStage_colab/'
 
-#NAME =
-#example: cat_exptype_dataset(training)_dataset(eval)_conf(batch size etc) 
-
 LOG_PATH = '/content/gdrive/My Drive/SecondStage_colab/output/'
 LABEL_MAP_PATH = '/content/gdrive/My Drive/SecondStage_colab/label_map.pbtxt'
-TRAIN_RECORD = '/content/gdrive/My Drive/data/generated/SecondStage_X/training_rot9_13colors.record'
-EVAL_RECORD = '/content/gdrive/My Drive/data/generated/SecondStage_X/validation_rot3_13colors.record'
+EVAL_RECORD = '/content/gdrive/My Drive/data/generated/SecondStage_X/validation_rot9_13colors.record'
 
 GPU = True
 
 from file_utils import save_json
 from second_stage_utils import *
+
+# you can not set these here, change them in the second_stage_utils
+print(ANGLES_PER_BIN)
+print(NUM_ORI_BINS)
 
 def train(train_record, conf, out, rep=1):
     timestamp = "{:%Y-%m-%d-%H-%M}".format(datetime.now())
@@ -103,6 +103,7 @@ def train(train_record, conf, out, rep=1):
     outputs = None
     model_final = None
     summary = TensorBoardCustom(log_dir=log_path, label_map=label_map, AddCustomMetrics=(out == '_cat'))
+    earlyStop = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=7, restore_best_weights=True)
 
     filepath=log_path+"model-{epoch:02d}.h5"
     checkpoint = ModelCheckpoint(filepath, verbose=1, period=20)
@@ -113,6 +114,14 @@ def train(train_record, conf, out, rep=1):
     else:
         raise Error('Unknown optimizer: ' + conf['optimizer'])
 
+    loss_weights = [1.0 if out == '_cat' else 0.0, 1.0 if out == '_reg' else 0.0, 1.0 if out == '_bin' else 0.0]
+    epochs = 0
+    if out == '_cat': 
+      epochs = conf['epochs_cat']
+    elif out == '_reg': 
+      epochs = conf['epochs_reg']
+    else:
+      epochs = conf['epochs_bin']
 
     mobilenet_base = applications.mobilenet.MobileNet(alpha = conf['alpha'],
                                                       weights = "imagenet",
@@ -127,68 +136,39 @@ def train(train_record, conf, out, rep=1):
     x = GlobalAveragePooling2D()(mobilenet_base.output)
     x = Reshape(shape, name='reshape_1')(x)
     #x = Dropout(conf['dropout'], name='dropout')(x)
+    # Branch regression
+    reg = Conv2D(1, (1, 1), padding='same', name='conv_reg')(x)
+    reg = Activation('linear', name='act_linear')(reg)
+    reg = Reshape((1,), name='reg_out')(reg)
+    # Branch orientation classification with bins
+    bin = Conv2D(NUM_ORI_BINS, (1, 1), padding='same', name='conv_bin')(x)
+    bin = Activation('softmax', name='act_bin')(bin)
+    bin = Reshape((NUM_ORI_BINS,), name='bin_out')(bin)
+    # Branch classification
+    cat = Conv2D(num_classes, (1, 1), padding='same', name='conv_cat')(x)
+    cat = Activation('softmax', name='act_softmax')(cat)
+    cat = Reshape((num_classes,), name='cat_out')(cat)
 
-    if out == '_cat':
-      # Branch classification
-      cat = Conv2D(num_classes, (1, 1),
-                padding='same', name='conv_cat')(x)
-      cat = Activation('softmax', name='act_softmax')(cat)
-      cat = Reshape((num_classes,), name='cat_out')(cat)
-      outputs = cat
-      model_final = Model(inputs = mobilenet_base.input, outputs = outputs)
-      model_final.compile(optimizer = optimizer,
-                          loss={'cat_out': 'categorical_crossentropy'},
-                          metrics ={'cat_out': 'accuracy'})
-      model_final.fit(
+    model_final = Model(inputs = mobilenet_base.input, outputs = [cat,reg,bin])
+    model_final.compile(optimizer = optimizer,
+                  loss={'cat_out': 'categorical_crossentropy',
+                        'reg_out': angle_mse,
+                        'bin_out': 'categorical_crossentropy',
+                  },
+                  loss_weights={'cat_out': loss_weights[0],
+                                'reg_out': loss_weights[1],
+                                'bin_out': loss_weights[2]},
+                  metrics ={'cat_out': 'accuracy',
+                            'reg_out': angle_mae,
+                            'bin_out': angle_bin_rmse})
+    model_final.fit(
         X_train,
-        {'cat_out': Y_train},
-        validation_data=(X_val, Y_val),
-        batch_size=conf['batch_size'], epochs = conf['epochs_cat'], verbose=1,
-        callbacks=[summary,checkpoint],
+        {'cat_out': Y_train, 'reg_out': Z_train, 'bin_out': Z2_train},
+        validation_data=(X_val, [Y_val, Z_val, Z2_val]),
+        batch_size=conf['batch_size'], epochs=epochs, verbose=1,
+        callbacks=[summary, checkpoint, earlyStop],
         shuffle=True
-      )
-      
-    elif out == '_reg':
-      # Branch regression
-      reg = Conv2D(1, (1, 1),
-                padding='same', name='conv_reg')(x)
-      reg = Activation('linear', name='act_linear')(reg)
-      reg = Reshape((1,), name='reg_out')(reg)
-      outputs = reg
-      model_final = Model(inputs = mobilenet_base.input, outputs = outputs)
-      model_final.compile(optimizer = optimizer,
-                          loss={'reg_out': angle_mse},
-                          metrics ={'reg_out': angle_mae})
-      model_final.fit(
-        X_train,
-        {'reg_out': Z_train},
-        validation_data=(X_val, Z_val),
-        batch_size=conf['batch_size'], epochs = conf['epochs_reg'], verbose=1,
-        callbacks=[summary,checkpoint],
-        shuffle=True
-      )
-            
-    elif out == '_bin':
-      # Branch orientation classification with bins
-      bin = Conv2D(NUM_ORI_BINS, (1, 1),
-                padding='same', name='conv_bin')(x)
-      bin = Activation('softmax', name='act_bin')(bin)
-      bin = Reshape((NUM_ORI_BINS,), name='bin_out')(bin)
-      outputs = bin
-      model_final = Model(inputs = mobilenet_base.input, outputs = outputs)
-      model_final.compile(optimizer = optimizer,
-                          loss= {'bin_out': 'categorical_crossentropy'},
-                          metrics = [angle_bin_mae, angle_bin_rmse])
-      model_final.fit(
-        X_train,
-        {'bin_out': Z2_train},
-        validation_data=(X_val, Z2_val),
-        batch_size=conf['batch_size'], epochs = conf['epochs_bin'], verbose=1,
-        callbacks=[summary,checkpoint],
-        shuffle=True
-      )
-    else:
-        print('UNKNOWN OUTPUT CONFIG {}'.format(out))
+    )
 
     model_final.save(log_path+"model-final.h5")
     print(log_path)
@@ -196,41 +176,28 @@ def train(train_record, conf, out, rep=1):
 
 default_sstage_conf = {
     'dataset': 'default',
-    'epochs_cat': 40,
-    'epochs_reg': 40,
-    'epochs_bin': 40,
+    'epochs_cat': 70,
+    'epochs_reg': 60,
+    'epochs_bin': 70,
     'optimizer': 'adam',
-    'learning_rate': 3e-4,
+    'learning_rate': 1e-4,
     'dropout': 0.001,
     'alpha': 0.5,
     'img_size': 35,
     'repetions': 1,
-    'batch_size': 7020,
+    'batch_size': 4096,
 }
 
 def create_all_sstage_experiments():
     configs = []
     #configs.extend(create_sstage_default())
-    #configs.extend(create_sstage_dropouts())
-    #configs.extend(create_sstage_alphas())
-    #configs.extend(create_sstage_dropouts_alphas())
-    configs.extend(create_sstage_batch_sizes())
+    configs.extend(create_sstage_dropouts_alphas())
     return configs
-
-def create_sstage_batch_sizes():
-    config = []
-    batchsizes = [10530, 7020, 3510, 2106, 1053]
-    for size in batchsizes:
-      modified = deepcopy(default_sstage_conf)
-      modified['name'] = "sstage_default_bsize" + str(size)
-      modified['batch_size'] = size
-      config.append(deepcopy(modified))
-    return config
 
 def create_sstage_dropouts_alphas():
     config = []
-    dropouts = [0.001, 0.3, 0.4, 0.5, 0.6] #
-    alphas = [0.25] # 0.5, 0.75, 1.0
+    dropouts = [0.001, 0.1, 0.2, 0.3]
+    alphas = [0.5, 0.75]
     for drop in dropouts:
       modified = deepcopy(default_sstage_conf)
       modified['name'] = "ssdef_drop" + str(drop)
@@ -242,26 +209,6 @@ def create_sstage_dropouts_alphas():
         config.append(deepcopy(modifiedB))
     return config
 
-def create_sstage_dropouts():
-    config = []
-    dropouts = [0.25]
-    for drop in dropouts:
-      modified = deepcopy(default_sstage_conf)
-      modified['name'] = "sstage_default_drop" + str(drop)
-      modified['dropout'] = drop
-      config.append(deepcopy(modified))
-    return config
-
-def create_sstage_alphas():
-    config = []
-    alphas = [0.5, 0.75, 1.0]
-    for alp in alphas:
-      modified = deepcopy(default_sstage_conf)
-      modified['name'] = "sstage_default_alpha" + str(alp)
-      modified['alpha'] = alp
-      config.append(deepcopy(modified))
-    return config
-
 def create_sstage_default():
     config = []
     modified = deepcopy(default_sstage_conf)
@@ -269,11 +216,13 @@ def create_sstage_default():
     config.append(deepcopy(modified))
     return config
 
+
 exp = create_all_sstage_experiments()
 TORUN = []
 TORUN.append('_bin')
 TORUN.append('_cat')
-train_records = [ 'training_rot9_13colors.record']
+#TORUN.append('_reg')
+train_records = ['training_rot12_13colors.record']#, 'training_rot9_13colors.record']
 for config in tqdm(exp):
     print("or_conf", config)
     for r in range(config['repetions']):     
@@ -298,8 +247,8 @@ for config in tqdm(exp):
 # LOG_PATH did not work for some reason
 # %tensorboard --logdir '/content/gdrive/My Drive/SecondStage_colab/output/'
 
-#!pip install -U tensorboard >piplog 2>&1
-#!tensorboard dev upload --logdir '/content/gdrive/My Drive/SecondStage_colab/output/'
+!pip install -U tensorboard >piplog 2>&1
+!tensorboard dev upload --logdir '/content/gdrive/My Drive/SecondStage_colab/output/'
 
 !pip install -U tensorboard >piplog 2>&1
 !tensorboard dev list
@@ -309,5 +258,5 @@ for config in tqdm(exp):
 
 ## !tensorboard dev delete --experiment_id YOUR_EXPERIMENT_ID_HERE
 
-#!rm "/content/gdrive/My Drive/SecondStage_colab/output/" -rf
-#!ls "/content/gdrive/My Drive/SecondStage_colab/"
+!rm "/content/gdrive/My Drive/SecondStage_colab/output/" -rf
+!ls "/content/gdrive/My Drive/SecondStage_colab/"
