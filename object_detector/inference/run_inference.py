@@ -24,7 +24,7 @@ with detection_graph.as_default():
 
 with detection_graph.as_default():
     with tf.Session(graph=detection_graph) as sess:
-        filelist = glob.glob('./images/*.png')
+        filelist = glob.glob('images/*.png')
         for file in filelist:
             image_np = np.array(Image.open(file))
             # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
@@ -41,17 +41,25 @@ with detection_graph.as_default():
             (boxes, scores, classes, num_detections) = sess.run(
                 [boxes, scores, classes, num_detections],
                 feed_dict={image_tensor: image_np_expanded})
-            # Visualization of the results of a detection.
-#            vis_util.visualize_boxes_and_labels_on_image_array(
-#                image_np,
-#                np.squeeze(boxes),
-#                np.squeeze(classes).astype(np.int32),
-#                np.squeeze(scores),
-#                category_index,
-#                use_normalized_coordinates=True,
-#                line_thickness=8)
+            boxes_sq = np.squeeze(boxes)
+            scores_sq = np.squeeze(scores)
+            num_detections_sq = np.squeeze(num_detections)
+
+            # Draw bounding boxes
+            color = np.array([0, 255, 0], dtype=np.uint8)
+            for i in range(0, int(num_detections_sq) - 1):
+                if scores_sq[i] > 0.5:
+                    box = boxes_sq[i, 0]
+                    bounding_box = (int(boxes_sq[i, 1] * image_np.shape[1]),
+                                    int(boxes_sq[i, 0] * image_np.shape[0]),
+                                    int((boxes_sq[i, 3] - boxes_sq[i, 1]) * image_np.shape[1]),
+                                    int((boxes_sq[i, 2] - boxes_sq[i, 0]) * image_np.shape[0]))
+
+                    image_np[bounding_box[1], bounding_box[0]:bounding_box[0] + bounding_box[2]] = color
+                    image_np[bounding_box[1]:bounding_box[1] + bounding_box[3], bounding_box[0]] = color
+
+                    image_np[bounding_box[1] + bounding_box[3], bounding_box[0]:bounding_box[0] + bounding_box[2]] = color
+                    image_np[bounding_box[1]:bounding_box[1] + bounding_box[3], bounding_box[0] + bounding_box[2]] = color
 
             cv2.imshow('object detection', cv2.resize(image_np, (800, 600)))
-            if cv2.waitKey(25):
-                cv2.destroyAllWindows()
-                break
+            cv2.waitKey()
