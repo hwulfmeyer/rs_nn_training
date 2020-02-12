@@ -31,6 +31,7 @@ import PIL
 import tensorflow as tf
 from PIL import Image, ImageEnhance
 from tqdm import tqdm, trange
+import math
 
 np.random.seed(146324)
 
@@ -41,7 +42,7 @@ object_classes = {
 }
 
 
-sphero_classes = {
+sphero_11_classes = {
     "red": 1,
     "orange": 2,
     "yellow": 3,
@@ -54,6 +55,36 @@ sphero_classes = {
     "light_blue": 10,
     "blue": 11,
 }
+
+sphero_9_classes = {
+    "red": 1,
+    "yellow": 2,
+    "lime_green": 3,
+    "magenta": 4, 
+    "purple": 5,
+    "green": 6,
+    "blue_green": 7,
+    "light_blue": 8,
+    "blue": 9,
+}
+
+sphero_13_classes = {
+    "red": 1,
+    "yellow": 2,
+    "lime_green": 3,
+    "magenta": 4, 
+    "purple": 5,
+    "green": 6,
+    "blue_green": 7,
+    "light_blue": 8,
+    "blue": 9,
+    "dark_blue": 10,
+    "dark_red": 11,
+    "dark_green": 12,
+    "white": 13
+}
+
+sphero_classes = sphero_13_classes
 
 
 def int64_feature(value):
@@ -80,7 +111,9 @@ def float_list_feature(value):
 - SHAPE = (height, width, 3)
 - the images have a random brightness
 """
-def generate_gaussiannoiseimg(SHAPE = (1200, 1600, 3), brtn = None):
+def generate_gaussiannoiseimg(SHAPE = (300, 400), brtn = None, out_width=1600):
+    scl_factor = out_width/1600
+    SHAPE = (int(SHAPE[0]*(1/scl_factor)), int(SHAPE[1]*(1/scl_factor)), 3)
     noise = np.random.randint(0, 255, SHAPE)
     noise = noise.astype(dtype=np.uint8)
     img = Image.fromarray(noise, mode='RGB')
@@ -90,15 +123,20 @@ def generate_gaussiannoiseimg(SHAPE = (1200, 1600, 3), brtn = None):
     if brtn is None:
         brtn = np.random.uniform(0.1, 0.3)
     img = ImageEnhance.Brightness(img).enhance(brtn)
+    img = img.resize((int(math.ceil(img.width*scl_factor)),int(math.ceil(img.height*scl_factor))), resample=Image.LANCZOS)
     return img
 
+def generate_random_image(img, bg, edge_distance=0, rot=None, out_width=1600):
+    # random horizontal flip
+    if bool(random.getrandbits(1)):
+      img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
 
-def generate_random_image(img, bg, edge_distance=0, rot=None):
     # random scale
+    scl_factor = out_width/1600
     img = copy.deepcopy(img)
     bg = copy.deepcopy(bg)
-    scl = round(np.random.uniform(0.95, 1.05), 2)
-    img = img.resize((int(scl*img.width),int(scl*img.height)), resample=Image.LANCZOS)
+    scl = round(np.random.uniform(0.85, 1.15), 2)
+    img = img.resize((int(scl*img.width*scl_factor),int(scl*img.height*scl_factor)), resample=Image.LANCZOS)
 
     # random rotation
     if rot is None:
@@ -106,7 +144,7 @@ def generate_random_image(img, bg, edge_distance=0, rot=None):
     img = img.rotate(rot, resample=Image.BICUBIC, expand=False)
 
     # random brightness
-    brtn = round(np.random.uniform(0.9, 1.1), 2)
+    brtn = round(np.random.uniform(0.85, 1.15), 2)
     img = ImageEnhance.Brightness(img).enhance(brtn)
 
     # random position
@@ -143,18 +181,16 @@ def writetfrecord(filename, tf_examples):
 - xmin, xmax, ymin, ymax: sind die koordinaten der bounding box
 """
 
-def firststage(isTrainingData, saveImages=False):
-    TRAIN_SIZE = 5000
-    TEST_SIZE = 1500
-    BGHEIGHT = 300
-    BGWIDTH = 300
+def firststage(isTrainingData, saveImages=False, out_width=1600):
+    TRAIN_SIZE = 10
+    TEST_SIZE = 10
     FOLDER = "validation"
     SIZE = TEST_SIZE
     if isTrainingData:
         FOLDER = "training"
         SIZE = TRAIN_SIZE
     OUT_PATH = "output/"
-    CROP_PATH = "crops_11_colors/" + FOLDER + "/"
+    CROP_PATH = "crops_13_colors/" + FOLDER + "/"
     timestamp = "{:%Y%m%d_%H%M%S}".format(datetime.datetime.now())
     timestamp = "X"
     IMG_OUT_PATH = OUT_PATH+"FirstStage_"+timestamp+"/"  + FOLDER + "/"
@@ -163,21 +199,19 @@ def firststage(isTrainingData, saveImages=False):
 
     CROPS = [f for f in listdir(CROP_PATH) if isfile(join(CROP_PATH, f))]
     tf_examples = []
-    tfrec_writer = tf.io.TFRecordWriter(TFREC_OUT_PATH+".record")
+    tfrec_writer = tf.io.TFRecordWriter(TFREC_OUT_PATH+"_width"+str(out_width)+".record")
     for i in trange(SIZE):
-        bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3))
-        xmins, xmaxs, ymins, ymaxs, obj_class_str, obj_class = [], [], [], [], [], []
+        bg = generate_gaussiannoiseimg(out_width=out_width)
+        xmins, xmaxs, ymins, ymaxs, obj_class_str, obj_class, img_class_str, img_class = [], [], [], [], [], [], [], []
         for k in range(random.randint(2,5)):
             crop = np.random.choice(CROPS)
             img = Image.open(CROP_PATH + crop, 'r')
-            if not isTrainingData:
-                img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
 
             # repeat as long as we have a sphero that overlaps on another sphero
             repeat = True
             while repeat:
-                new_bg, new_img, pos, _,_,_ = generate_random_image(img, bg, edge_distance=5)
                 addedsize = 5
+                new_bg, new_img, pos, _, rot,_ = generate_random_image(img, bg, edge_distance=addedsize, out_width=out_width)
                 xmin = pos[0] - addedsize
                 xmax = pos[0] + addedsize + img.width
                 ymin = pos[1] - addedsize
@@ -203,6 +237,8 @@ def firststage(isTrainingData, saveImages=False):
             ymaxs.append(ymax)
             obj_class_str.append("sphero".encode('utf8'))
             obj_class.append(object_classes.get("sphero"))
+            img_class_str.append((crop[:-5]).encode('utf8'))
+            img_class = sphero_classes.get(img_class_str[-1])
         xmins = [x / bg.width for x in xmins]
         xmaxs = [x / bg.width for x in xmaxs]
         ymins = [x / bg.height for x in ymins]
@@ -225,6 +261,9 @@ def firststage(isTrainingData, saveImages=False):
             'image/object/bbox/xmax': float_list_feature(xmaxs),
             'image/object/bbox/ymin': float_list_feature(ymins),
             'image/object/bbox/ymax': float_list_feature(ymaxs),
+            'image/object/subclass/text': bytes_list_feature(img_class_str),
+            'image/object/subclass/label': int64_list_feature(img_class),
+            'image/object/pose/orientation': int64_feature(rot),
         }))
         tf_examples.append(tf_example)
         if saveImages:
@@ -251,7 +290,7 @@ def firststage(isTrainingData, saveImages=False):
 - img_class, img_class_str: ID der klasse und der name der klasse (siehe 'sphero_classes' dict)
 """
 
-def secondstage(isTrainingData, saveImages=False, RotRepetitions=1):
+def secondstage(isTrainingData, saveImages=False, RotRepetitions=1, out_width=1600):
 
     BGHEIGHT = 35
     BGWIDTH = 35
@@ -259,7 +298,7 @@ def secondstage(isTrainingData, saveImages=False, RotRepetitions=1):
     if isTrainingData:
         FOLDER = "training"
     OUT_PATH = "output/"
-    CROP_PATH = "crops_11_colors/" + FOLDER + "/"
+    CROP_PATH = "crops_13_colors/" + FOLDER + "/"
     timestamp = "{:%Y%m%d_%H%M%S}".format(datetime.datetime.now())
     timestamp = "X"
     IMG_OUT_PATH = OUT_PATH+"SecondStage_"+timestamp+"/"  + FOLDER + "/"
@@ -274,11 +313,9 @@ def secondstage(isTrainingData, saveImages=False, RotRepetitions=1):
         for rot in range(360):
             for k in range(RotRepetitions):
                 img = Image.open(CROP_PATH + crop)
-                if not isTrainingData:
-                    img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
-                bg = generate_gaussiannoiseimg(SHAPE = (BGHEIGHT, BGWIDTH, 3), brtn=0.2)
+                bg = generate_gaussiannoiseimg(SHAPE = (35, 35), brtn=0.2, out_width=out_width)
 
-                bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, 3, rot)
+                bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, 3, rot, out_width=out_width)
 
                 # save image and csv
                 with io.BytesIO() as output:
@@ -307,13 +344,13 @@ def secondstage(isTrainingData, saveImages=False, RotRepetitions=1):
                 }))
                 tf_examples.append(tf_example)
 
-    writetfrecord(TFREC_OUT_PATH+"_rot"+str(RotRepetitions)+".record", tf_examples)
+    writetfrecord(TFREC_OUT_PATH+"_rot"+str(RotRepetitions)+"_13colors.record", tf_examples)
 
-#from google.colab import drive
-#drive.mount('/content/drive')
+from google.colab import drive
+drive.mount('/content/drive')
 
-#import os
-#os.chdir('/content/drive/My Drive/Colab Notebooks')
+import os
+os.chdir('/content/drive/My Drive/Colab Notebooks')
 # Upload the crops folder to the folder above
 # Should look like this:
 #   crops_11_colors/
@@ -325,17 +362,16 @@ def secondstage(isTrainingData, saveImages=False, RotRepetitions=1):
 # I would not recommend to save the individual image files created by the compositor to google drive
 # google drive might also take a while to display the 'output' folder in the google drive view
 
-firststage(isTrainingData=True, saveImages=False)
-firststage(isTrainingData=False, saveImages=False)
+#firststage(isTrainingData=True, saveImages=False, out_width=1600) #1600,1200,800,600,400
+#firststage(isTrainingData=True, saveImages=False, out_width=1200) #1600,1200,800,600,400
+firststage(isTrainingData=True, saveImages=False, out_width=600) #1600,1200,800,600,400
+#firststage(isTrainingData=True, saveImages=False, out_width=600) #1600,1200,800,600,400
+#firststage(isTrainingData=True, saveImages=False, out_width=400) #1600,1200,800,600,400
+firststage(isTrainingData=False, saveImages=False, out_width=600)
 
-secondstage(isTrainingData=True, saveImages=False, RotRepetitions=1)
-secondstage(isTrainingData=True, saveImages=False, RotRepetitions=3)
-secondstage(isTrainingData=True, saveImages=False, RotRepetitions=6)
-secondstage(isTrainingData=True, saveImages=False, RotRepetitions=9)
 secondstage(isTrainingData=True, saveImages=False, RotRepetitions=12)
-secondstage(isTrainingData=True, saveImages=False, RotRepetitions=15)
-secondstage(isTrainingData=False, saveImages=False, RotRepetitions=2)
+secondstage(isTrainingData=False, saveImages=False, RotRepetitions=9)
 
 #!ls
-# delete the complete output folder
+#delete the complete output folder
 #!rm output -rf

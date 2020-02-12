@@ -58,13 +58,9 @@ from SecondStage_colab import file_utils
 sys.path.append('/content/gdrive/My Drive/SecondStage_colab/')
 os.environ['PYTHONPATH'] += ':/content/gdrive/My Drive/SecondStage_colab/'
 
-#NAME =
-#example: cat_exptype_dataset(training)_dataset(eval)_conf(batch size etc) 
-
 LOG_PATH = '/content/gdrive/My Drive/SecondStage_colab/output/'
 LABEL_MAP_PATH = '/content/gdrive/My Drive/SecondStage_colab/label_map.pbtxt'
-TRAIN_RECORD = '/content/gdrive/My Drive/data/generated/SecondStage_X/training_rot9_13colors.record'
-EVAL_RECORD = '/content/gdrive/My Drive/data/generated/SecondStage_X/validation_rot3_13colors.record'
+EVAL_RECORD = '/content/gdrive/My Drive/data/generated/SecondStage_X/validation_rot9_13colors.record'
 
 GPU = True
 
@@ -74,10 +70,6 @@ from second_stage_utils import *
 # you can not set these here, change them in the second_stage_utils
 print(ANGLES_PER_BIN)
 print(NUM_ORI_BINS)
-
-X_val = None
-Y_val = None
-model_final = None
 
 def train(train_record, conf, out, rep=1):
     timestamp = "{:%Y-%m-%d-%H-%M}".format(datetime.now())
@@ -111,6 +103,7 @@ def train(train_record, conf, out, rep=1):
     outputs = None
     model_final = None
     summary = TensorBoardCustom(log_dir=log_path, label_map=label_map, AddCustomMetrics=(out == '_cat'))
+    earlyStop = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=7, restore_best_weights=True)
 
     filepath=log_path+"model-{epoch:02d}.h5"
     checkpoint = ModelCheckpoint(filepath, verbose=1, period=20)
@@ -173,7 +166,7 @@ def train(train_record, conf, out, rep=1):
         {'cat_out': Y_train, 'reg_out': Z_train, 'bin_out': Z2_train},
         validation_data=(X_val, [Y_val, Z_val, Z2_val]),
         batch_size=conf['batch_size'], epochs=epochs, verbose=1,
-        callbacks=[summary,checkpoint],
+        callbacks=[summary, checkpoint, earlyStop],
         shuffle=True
     )
 
@@ -183,52 +176,28 @@ def train(train_record, conf, out, rep=1):
 
 default_sstage_conf = {
     'dataset': 'default',
-    'epochs_cat': 2,
-    'epochs_reg': 20,
-    'epochs_bin': 120,
+    'epochs_cat': 70,
+    'epochs_reg': 60,
+    'epochs_bin': 70,
     'optimizer': 'adam',
-    'learning_rate': 3e-4,
+    'learning_rate': 1e-4,
     'dropout': 0.001,
     'alpha': 0.5,
     'img_size': 35,
     'repetions': 1,
-    'batch_size': 2106,
+    'batch_size': 4096,
 }
 
 def create_all_sstage_experiments():
     configs = []
     #configs.extend(create_sstage_default())
-    #configs.extend(create_sstage_dropouts())
-    #configs.extend(create_sstage_alphas())
-    #configs.extend(create_sstage_dropouts_alphas())
-    #configs.extend(create_sstage_batch_sizes())
-    configs.extend(create_sstage_learning())
+    configs.extend(create_sstage_dropouts_alphas())
     return configs
-
-def create_sstage_learning():
-    config = []
-    learningrates = [5e-5, 3e-5, 1e-5]
-    for rate in learningrates:
-      modified = deepcopy(default_sstage_conf)
-      modified['name'] = "sstage_default_lrate" + str(rate)
-      modified['learning_rate'] = rate
-      config.append(deepcopy(modified))
-    return config
-
-def create_sstage_batch_sizes():
-    config = []
-    batchsizes = [10530, 7020, 3510, 2106, 1053]
-    for size in batchsizes:
-      modified = deepcopy(default_sstage_conf)
-      modified['name'] = "sstage_default_bsize" + str(size)
-      modified['batch_size'] = size
-      config.append(deepcopy(modified))
-    return config
 
 def create_sstage_dropouts_alphas():
     config = []
-    dropouts = [0.001, 0.3, 0.4, 0.5, 0.6] #
-    alphas = [0.25] # 0.5, 0.75, 1.0
+    dropouts = [0.001, 0.1, 0.2, 0.3]
+    alphas = [0.5, 0.75]
     for drop in dropouts:
       modified = deepcopy(default_sstage_conf)
       modified['name'] = "ssdef_drop" + str(drop)
@@ -240,26 +209,6 @@ def create_sstage_dropouts_alphas():
         config.append(deepcopy(modifiedB))
     return config
 
-def create_sstage_dropouts():
-    config = []
-    dropouts = [0.25]
-    for drop in dropouts:
-      modified = deepcopy(default_sstage_conf)
-      modified['name'] = "sstage_default_drop" + str(drop)
-      modified['dropout'] = drop
-      config.append(deepcopy(modified))
-    return config
-
-def create_sstage_alphas():
-    config = []
-    alphas = [0.5, 0.75, 1.0]
-    for alp in alphas:
-      modified = deepcopy(default_sstage_conf)
-      modified['name'] = "sstage_default_alpha" + str(alp)
-      modified['alpha'] = alp
-      config.append(deepcopy(modified))
-    return config
-
 def create_sstage_default():
     config = []
     modified = deepcopy(default_sstage_conf)
@@ -267,12 +216,13 @@ def create_sstage_default():
     config.append(deepcopy(modified))
     return config
 
+
 exp = create_all_sstage_experiments()
 TORUN = []
-#TORUN.append('_bin')
+TORUN.append('_bin')
 TORUN.append('_cat')
 #TORUN.append('_reg')
-train_records = ['validation_rot3_13colors.record']#, 'training_rot9_13colors.record']
+train_records = ['training_rot12_13colors.record']#, 'training_rot9_13colors.record']
 for config in tqdm(exp):
     print("or_conf", config)
     for r in range(config['repetions']):     
@@ -308,5 +258,5 @@ for config in tqdm(exp):
 
 ## !tensorboard dev delete --experiment_id YOUR_EXPERIMENT_ID_HERE
 
-#!rm "/content/gdrive/My Drive/SecondStage_colab/output/" -rf
-#!ls "/content/gdrive/My Drive/SecondStage_colab/"
+!rm "/content/gdrive/My Drive/SecondStage_colab/output/" -rf
+!ls "/content/gdrive/My Drive/SecondStage_colab/"
