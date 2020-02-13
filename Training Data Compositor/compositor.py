@@ -144,7 +144,7 @@ def generate_random_image(img, bg, edge_distance=0, rot=None, out_width=1600):
     scl_factor = out_width/1600
     img = copy.deepcopy(img)
     bg = copy.deepcopy(bg)
-    scl = round(np.random.uniform(0.85, 1.15), 2)
+    scl = round(np.random.uniform(0.85, 1.10), 2)
     img = img.resize((int(scl*img.width*scl_factor),int(scl*img.height*scl_factor)), resample=Image.LANCZOS)
 
     # random rotation
@@ -191,13 +191,8 @@ def writetfrecord(filename, tf_examples):
 """
 
 def firststage(isTrainingData, saveImages=False, out_width=1600):
-<<<<<<< HEAD
-    TRAIN_SIZE = 5
-    TEST_SIZE = 5
-=======
     TRAIN_SIZE = 10
     TEST_SIZE = 10
->>>>>>> b62ee811faabec48798f21b81315d9a85cf44a7e
     FOLDER = "validation"
     SIZE = TEST_SIZE
     if isTrainingData:
@@ -224,11 +219,7 @@ def firststage(isTrainingData, saveImages=False, out_width=1600):
             # repeat as long as we have a sphero that overlaps on another sphero
             repeat = True
             while repeat:
-<<<<<<< HEAD
                 addedsize = int(math.ceil(5*(out_width/1600)))
-=======
-                addedsize = 5
->>>>>>> b62ee811faabec48798f21b81315d9a85cf44a7e
                 new_bg, new_img, pos, _, rot,_ = generate_random_image(img, bg, edge_distance=addedsize, out_width=out_width)
                 xmin = pos[0] - addedsize
                 xmax = pos[0] + addedsize + img.width
@@ -332,7 +323,7 @@ def secondstage(isTrainingData, saveImages=False, RotRepetitions=1, out_width=16
             for k in range(RotRepetitions):
                 img = Image.open(CROP_PATH + crop)
                 bg = generate_gaussiannoiseimg(SHAPE = (35, 35, 3), brtn=0.2, out_width=out_width)
-
+                
                 bg, img, pos, brtn, rot, scl = generate_random_image(img, bg, 3, rot, out_width=out_width)
 
                 # save image and csv
@@ -380,14 +371,12 @@ os.chdir('/content/drive/My Drive/Colab Notebooks')
 # I would not recommend to save the individual image files created by the compositor to google drive
 # google drive might also take a while to display the 'output' folder in the google drive view
 
-<<<<<<< HEAD
 firststage(isTrainingData=True, saveImages=True, out_width=1600) #1600,1200,800,600,400
-=======
-#firststage(isTrainingData=True, saveImages=False, out_width=400) #1600,1200,800,600,400
->>>>>>> b62ee811faabec48798f21b81315d9a85cf44a7e
 #firststage(isTrainingData=False, saveImages=False, out_width=400)
 
-secondstage(isTrainingData=True, saveImages=False, RotRepetitions=13)
+secondstage(isTrainingData=True, saveImages=False, RotRepetitions=1)
+secondstage(isTrainingData=False, saveImages=False, RotRepetitions=1)
+#secondstage(isTrainingData=True, saveImages=False, RotRepetitions=13)
 #secondstage(isTrainingData=False, saveImages=False, RotRepetitions=9)
 
 #!ls
