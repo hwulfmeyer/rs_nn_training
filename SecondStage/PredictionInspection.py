@@ -23,14 +23,15 @@ from second_stage_utils import *
 # disable GPU
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-MODEL = '/home/josi/OvGU/Rolling Swarm/output/5_pos/reg/rot6/b=4096/2020-01-16-08-05-r1/model-final.h5'
-OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/5_pos/'
-TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/train/training_rot6.record'
-EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/train/sphero'
-LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/label_map.pbtxt'
+#MODEL = '/home/josi/OvGU/Rolling Swarm/output/5_pos/reg/rot6/b=4096/2020-01-16-08-05-r1/model-final.h5'
+MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/old_second_stage/new_labels/cat/model-final.h5'
+OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/13_colours_lab/'
+TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/13_colours_lab/training_rot9_9colors.record'
+EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/13_colours_lab/eval/'
+LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/robot_label_map_komplett.pbtxt'
 TRAIN_OR_VAL = 'val'
-MODE = "regression"
-#MODE = "classification"
+#MODE = "regression"
+MODE = "classification"
 TYPES = ['sphero']
 IMG_SIZE = 35
 
@@ -48,11 +49,17 @@ if TRAIN_OR_VAL == 'train':
     X_val, Y_val, Z_val = data_to_keras(X,Y,Z,num_classes,IMG_SIZE)
 else:
     eval_records = get_recursive_file_list(EVAL_DIR) 
+    print(eval_records)
     X,Y,Z,D = tf_record_extract_crops(eval_records, 1, 0.0, 0.0) 
     X_val, Y_val, Z_val = data_to_keras(X,Y,Z,num_classes,IMG_SIZE)
-X_val
-#print(X_val.shape)
-X_val
+#X_val
+
+print('********************************************************************')
+print(X_val)
+print(Y_val)
+print(Z_val)
+
+#X_val
 second_stage_model = load_model(MODEL,
                    custom_objects={
                    'relu6': ReLU,
@@ -63,8 +70,8 @@ second_stage_model = load_model(MODEL,
                    #loss: CategoricalCrossentropy,
                    #metrics: Accuracy})
 
-#predictions = second_stage_model.predict(np.array(X_val))
-predictions = second_stage_model.predict(X_val)
+predictions = second_stage_model.predict(np.array(X_val))
+#predictions = second_stage_model.predict(X_val)
 cat = np.argmax(predictions[0],axis=1)
 cat_score = np.max(predictions[0],axis=1)
 ori = predictions[1]
@@ -87,8 +94,9 @@ if MODE == "regression":
         gt = Z[i]
         diff = np_angle_diff2(gt,pred)
         if (abs(diff) < 1.5): num_in_tol += 1
-        print('Image {} diff of {} and {} is {}'.format(i, pred, gt, diff))
-        img.save(OUT_PATH+'{:03d}-pred-{}-gt-{}.png'.format(i,pred,gt))
+        if (abs(diff) > 3):
+            print('Image {} diff of {} and {} is {}'.format(i, pred, gt, diff))
+            img.save(OUT_PATH+'{:03d}-pred-{}-gt-{}.png'.format(i,pred,gt))
     print(num_in_tol / len(X_val))
     # Doesn't work.. Why?
     #print('MAE: {}'.format(np.mean(np.abs(np_angle_diff2(Z,ori)))))

@@ -15,10 +15,10 @@ if len(sys.argv) >= 2:
 def image_callback(data):
 	global last_time
 	try:
-		image = bridge.imgmsg_to_cv2(data, "passthrough")
+		image = bridge.imgmsg_to_cv2(data, "bgr8")
 	except CvBridgeError as e:
 		print(e)
-	path = "images/{}_{}.jpg".format(int(time.time()), img_suffix)
+	path = "images/{}_{}.png".format(int(time.time()), img_suffix)
 	if  time.time() - last_time > 1:
 		last_time = time.time()
 		cv2.imwrite(path, image)
