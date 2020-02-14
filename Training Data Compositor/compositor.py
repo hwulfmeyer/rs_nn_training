@@ -191,8 +191,8 @@ def writetfrecord(filename, tf_examples):
 """
 
 def firststage(isTrainingData, saveImages=False, out_width=1600):
-    TRAIN_SIZE = 10
-    TEST_SIZE = 10
+    TRAIN_SIZE = 5000
+    TEST_SIZE = 1000
     FOLDER = "validation"
     SIZE = TEST_SIZE
     if isTrainingData:
@@ -222,9 +222,9 @@ def firststage(isTrainingData, saveImages=False, out_width=1600):
                 addedsize = int(math.ceil(5*(out_width/1600)))
                 new_bg, new_img, pos, _, rot,_ = generate_random_image(img, bg, edge_distance=addedsize, out_width=out_width)
                 xmin = pos[0] - addedsize
-                xmax = pos[0] + addedsize + img.width
+                xmax = pos[0] + addedsize + new_img.width
                 ymin = pos[1] - addedsize
-                ymax = pos[1] + addedsize + img.height
+                ymax = pos[1] + addedsize + new_img.height
                 repeat = False
                 for p in range(len(xmins)):
                     # check if overlapping another sphero, bounding box style
@@ -355,11 +355,11 @@ def secondstage(isTrainingData, saveImages=False, RotRepetitions=1, out_width=16
 
     writetfrecord(TFREC_OUT_PATH+"_rot"+str(RotRepetitions)+"_13colors.record", tf_examples)
 
-from google.colab import drive
-drive.mount('/content/drive')
+#from google.colab import drive
+#drive.mount('/content/drive')
 
-import os
-os.chdir('/content/drive/My Drive/Colab Notebooks')
+#import os
+#os.chdir('/content/drive/My Drive/Colab Notebooks')
 # Upload the crops folder to the folder above
 # Should look like this:
 #   crops_11_colors/
@@ -371,11 +371,11 @@ os.chdir('/content/drive/My Drive/Colab Notebooks')
 # I would not recommend to save the individual image files created by the compositor to google drive
 # google drive might also take a while to display the 'output' folder in the google drive view
 
-firststage(isTrainingData=True, saveImages=True, out_width=1600) #1600,1200,800,600,400
-#firststage(isTrainingData=False, saveImages=False, out_width=400)
+firststage(isTrainingData=True, saveImages=False, out_width=400) #1600,1200,800,600,400
+firststage(isTrainingData=False, saveImages=False, out_width=400)
 
-secondstage(isTrainingData=True, saveImages=False, RotRepetitions=1)
-secondstage(isTrainingData=False, saveImages=False, RotRepetitions=1)
+#secondstage(isTrainingData=True, saveImages=False, RotRepetitions=1)
+#secondstage(isTrainingData=False, saveImages=False, RotRepetitions=1)
 #secondstage(isTrainingData=True, saveImages=False, RotRepetitions=13)
 #secondstage(isTrainingData=False, saveImages=False, RotRepetitions=9)
 
