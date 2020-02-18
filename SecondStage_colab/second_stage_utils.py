@@ -264,7 +264,7 @@ class TensorBoardCustom(Callback):
                             index = classes, 
                             columns = classes)
 
-        figure = plt.figure(figsize=(8, 8))
+        figure = plt.figure(figsize=(len(classes), len(classes)))
         sns.heatmap(con_mat_df, annot=True, cmap=plt.get_cmap('Blues'))
         plt.tight_layout()
         plt.ylabel('True label')
