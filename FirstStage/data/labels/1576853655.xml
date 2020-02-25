@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>1576853655.jpg</filename>
+	<path>E:\Documents\RollingSwarm\rs_nn_training\object_detector\data\images\1576853655.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1600</width>
+		<height>1200</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>sphero</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>293</xmin>
+			<ymin>689</ymin>
+			<xmax>322</xmax>
+			<ymax>717</ymax>
+		</bndbox>
+	</object>
+</annotation>

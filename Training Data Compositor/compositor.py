@@ -193,8 +193,8 @@ def writetfrecord(filename, tf_examples):
 """
 
 def firststage(isTrainingData, saveImages=False, out_width=1600):
-    TRAIN_SIZE = 3
-    TEST_SIZE = 10
+    TRAIN_SIZE = 4000
+    TEST_SIZE = 1000
     FOLDER = "validation"
     SIZE = TEST_SIZE
     if isTrainingData:
@@ -240,6 +240,9 @@ def firststage(isTrainingData, saveImages=False, out_width=1600):
                         repeat = True
 
 
+            print(xmax)
+            print(xmin)
+            print("---")
             img = new_img
             bg = new_bg
             xmins.append(xmin)
@@ -377,9 +380,9 @@ def secondstage(isTrainingData, saveImages=False, RotRepetitions=1, out_width=16
 # google drive might also take a while to display the 'output' folder in the google drive view
 
 #firststage(isTrainingData=True, saveImages=True, out_width=1600) #1600,1200,800,600,400
-#firststage(isTrainingData=False, saveImages=False, out_width=400)
+firststage(isTrainingData=True, saveImages=False, out_width=400)
 
-secondstage(isTrainingData=True, saveImages=True, RotRepetitions=1, withRandomMirroring=True)
+#secondstage(isTrainingData=True, saveImages=True, RotRepetitions=1, withRandomMirroring=True)
 #secondstage(isTrainingData=False, saveImages=False, RotRepetitions=6, withRandomMirroring=False)
 
 #!ls
