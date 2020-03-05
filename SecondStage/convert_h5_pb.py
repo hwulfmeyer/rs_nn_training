@@ -31,7 +31,7 @@ from keras import backend as K
 
 import sys
 sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/")
-from rs_nn_training.SecondStage.second_stage_utils import *
+from rs_nn_training.SecondStage_colab.second_stage_utils import *
 
 def angle_mae(y_true, y_pred):
     return K.mean(K.abs(angle_diff2(y_true, y_pred)), axis=-1)
@@ -57,7 +57,7 @@ def convertGraph( modelPath, outdir, numoutputs, prefix, name):
     K.set_learning_phase(0)
 
     #'angle_bin_mae' : angle_bin_mae, 'angle_bin_rmse' : angle_bin_rmse, 
-    net_model = load_model(modelPath, custom_objects = {'angle_mse' : angle_mse, 'angle_mae' : angle_mae, 'angle_bin_error' : angle_bin_error})
+    net_model = load_model(modelPath, custom_objects = {'angle_mse' : angle_mse, 'angle_mae' : angle_mae, 'angle_bin_rmse' : angle_bin_rmse}) #'angle_bin_error' : angle_bin_error,
 
     # Alias the outputs in the model - this sometimes makes them easier to access in TF
     pred = [None]*numoutputs
