@@ -6,14 +6,12 @@ from numpy.random import randint
 import io
 from keras import backend as K
 from keras.utils import np_utils
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
 
-#from rs_nn_training.Utils.file_utils import *
-
-# ANGLES_PER_BIN = 4
-# NUM_ORI_BINS = 90 # 360 / 4
 ANGLES_PER_BIN = 1
 NUM_ORI_BINS = 360
-
 
 def make_square(im, size, fill_color=(0, 0, 0, 0)):
     x, y = im.size
@@ -23,21 +21,8 @@ def make_square(im, size, fill_color=(0, 0, 0, 0)):
     new_im.paste(im, (int((size - im.size[0]) / 2), int((size - im.size[1]) / 2)))
     return new_im
 
-
-# Doesn't converge well
-# def angle_diff(y_true, y_pred):
-#     a = y_true / 360.0 * np.pi
-#     b = y_pred / 360.0 * np.pi
-#     diff = tf.atan2(K.sin(a-b), K.cos(a-b))
-#     return diff / np.pi * 360.0
-# def np_angle_diff(y_true, y_pred):
-#     a = y_true / 360.0 * np.pi
-#     b = y_pred / 360.0 * np.pi
-#     diff = np.arctan2(np.sin(a-b), np.cos(a-b))
-#     return diff / np.pi * 360.0
-
 def angle_diff2(y_true, y_pred):
-    return tf.math.mod(( (y_true - y_pred) + 180 ), 360 ) - 180
+    return tf.mod(( (y_true - y_pred) + 180 ), 360 ) - 180
 
 def np_angle_diff2(y_true, y_pred):
     return np.mod(( (y_true - y_pred) + 180 ), 360 ) - 180
@@ -48,10 +33,15 @@ def angle_mae(y_true, y_pred):
 def angle_mse(y_true, y_pred):
     return K.mean(K.square(angle_diff2(y_true, y_pred)), axis=-1)
 
-def angle_bin_error(y_true, y_pred):
+def angle_bin_mae(y_true, y_pred):
     diff = angle_diff2(K.argmax(y_true)*ANGLES_PER_BIN,
                        K.argmax(y_pred)*ANGLES_PER_BIN)
     return K.mean(K.cast(K.abs(diff), K.floatx()))
+
+def angle_bin_rmse(y_true, y_pred):
+    diff = angle_diff2(K.argmax(y_true)*ANGLES_PER_BIN,
+                       K.argmax(y_pred)*ANGLES_PER_BIN)
+    return K.sqrt(K.mean(K.square(K.cast(K.abs(diff), K.floatx()))))
 
 def data_to_keras(X,Y,Z, num_classes, size=35):
     X = [np.asarray(e) for e in X]
@@ -102,9 +92,10 @@ def tf_record_load_crops(files,num_per_record=-1,size=35):
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0]) #.decode('utf-8')
             width = feats.feature['image/width'].int64_list.value[0]
             height = feats.feature['image/height'].int64_list.value[0]
-            img = Image.open(io.BytesIO(img_enc))
-            #img = Image.open(open(img_enc, "rb"))
+
             #img = Image.frombytes('RGB', (height, width), img_enc)
+            img = Image.open(io.BytesIO(img_enc))
+
             color = (feats.feature["image/object/subclass/text"].bytes_list.value[0]).decode('utf-8') 
             color_id = feats.feature["image/object/subclass/label"].int64_list.value[0]
             orientation = feats.feature["image/object/pose/orientation"].int64_list.value[0]
@@ -137,19 +128,14 @@ def tf_record_extract_crops(files, num_derivations,
     crops, classes, orientations = [],[],[]
     debug_infos = []
     for f in files:
-        #print(f)
         record_iterator = tf.python_io.tf_record_iterator(f)
-        #records = tf.data.TFRecordDataset(f)
         for l, string_record in enumerate(record_iterator):
-        #for string_record in records:
             if num_per_record!=-1 and l > num_per_record: break
             example = tf.train.Example()
             example.ParseFromString(string_record) #.numpy())
             feats = example.features
             width  = feats.feature["image/width"].int64_list.value[0]
             height = feats.feature["image/height"].int64_list.value[0]
-            #width = 35
-            #height = 35
             img_name = (feats.feature['image/filename'].bytes_list.value[0]).decode('utf8')
             img_enc = (feats.feature['image/encoded'].bytes_list.value[0])
             img = Image.open(io.BytesIO(img_enc))
@@ -165,7 +151,7 @@ def tf_record_extract_crops(files, num_derivations,
                 width = feats.feature['image/width'].int64_list.value[0]
                 height = feats.feature['image/height'].int64_list.value[0]                
  
-                img_resized = img;
+                img_resized = img
                 if (width != 35 or height != 35): 
                     img_resized = img.resize((35,35), Image.BICUBIC)
 
@@ -184,7 +170,7 @@ def tf_record_extract_crops(files, num_derivations,
 from keras.callbacks import Callback
 import sklearn.metrics as sklm
 class TensorBoardCustom(Callback):
-    def __init__(self, log_dir='./logs',label_map='',images=''):
+    def __init__(self, log_dir='./logs',label_map='', AddCustomMetrics=False):
         super(Callback, self).__init__()
         global tf, projector
         try:
@@ -195,7 +181,7 @@ class TensorBoardCustom(Callback):
 
         self.log_dir = log_dir
         self.label_map = label_map
-        self.images = images
+        self.AddCustomMetrics = AddCustomMetrics
 
     def set_model(self, model):
         self.model = model
@@ -213,8 +199,9 @@ class TensorBoardCustom(Callback):
         self.writer.add_summary(summary, epoch)
 
     def add_custom_metrics(self, epoch):
-        y_pred, z_pred, z2_pred = self.model.predict(self.validation_data[0])
-        # [1] -> Y; [2] -> Z
+        y_pred = self.model.predict(self.validation_data[0])
+        y_pred = y_pred[0]
+        # [0]->cat, [1]->reg, [2]->bin
         y_targ = self.validation_data[1]
         y_targ_onehot = np.argmax(y_targ, axis=1)
         y_pred_onehot = np.argmax(y_pred, axis=1)
@@ -258,12 +245,47 @@ class TensorBoardCustom(Callback):
         self.write_metric('Average F1', avg_f1, epoch, 'Average Performance')
         self.write_metric('Average Support', avg_support, epoch, 'Average Performance')
 
+    def log_confusion_matrix(self, epoch):
+        # from https://androidkt.com/keras-confusion-matrix-in-tensorboard/
+        # and https://stackoverflow.com/questions/37902705/how-to-manually-create-a-tf-summary
+        # and https://gist.github.com/gyglim/1f8dfb1b5c82627ae3efcfbbadb9f514#file-tensorboard_logging-py-L41
+        y_pred = self.model.predict(self.validation_data[0])
+        y_pred = y_pred[0]
+        # [0]->cat, [1]->reg, [2]->bin
+        y_targ = self.validation_data[1]
+        y_targ_onehot = np.argmax(y_targ, axis=1)
+        y_pred_onehot = np.argmax(y_pred, axis=1)
+        con_mat = tf.Session().run(tf.math.confusion_matrix(labels=y_targ_onehot, predictions=y_pred_onehot))
+        con_mat_norm = np.around(con_mat.astype('float') / con_mat.sum(axis=1)[:, np.newaxis], decimals=2)
+        classes = ["None"]
+        classes.extend([self.label_map[i]['name'] for i in self.label_map.keys()])
+
+        con_mat_df = pd.DataFrame(con_mat_norm,
+                            index = classes, 
+                            columns = classes)
+
+        figure = plt.figure(figsize=(len(classes), len(classes)))
+        sns.heatmap(con_mat_df, annot=True, cmap=plt.get_cmap('Blues'))
+        plt.tight_layout()
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+        
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close(figure)
+        img_sum = tf.Summary.Image(encoded_image_string=buf.getvalue())
+
+        summary = tf.Summary(value=[
+            tf.Summary.Value(tag="Confusion Matrix", image=img_sum),
+        ])
+        self.writer.add_summary(summary, epoch)
+
     def on_epoch_end(self, epoch, logs=None):
         logs = logs or {}
         for name, value in logs.items():
             if name in ['batch', 'size']:
                 continue
-            # summary = tf.Summary()
+            # summary = tf.Summary()    
             # summary_value = summary.value.add()
             # summary_value.simple_value = value.item()
             # summary_value.tag = name
@@ -272,8 +294,9 @@ class TensorBoardCustom(Callback):
             else:
                 group = 'Keras Training/'
             self.write_metric(name, value, epoch, group)
-
-        # self.add_custom_metrics(epoch)
+        if self.AddCustomMetrics:
+          self.add_custom_metrics(epoch)
+          self.log_confusion_matrix(epoch)
 
         self.writer.flush()
 
@@ -301,5 +324,5 @@ class TestSecondStageUtils(unittest.TestCase):
         self.assertEqual(angle_to_bin(370)[2], 1)
         self.assertEqual(angle_to_bin(-10)[87], 1)
 
-if __name__ == '__main__':
-    unittest.main()
+#if __name__ == '__main__':
+#    unittest.main()

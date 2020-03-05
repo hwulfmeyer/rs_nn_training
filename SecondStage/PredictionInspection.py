@@ -24,10 +24,12 @@ from second_stage_utils import *
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 #MODEL = '/home/josi/OvGU/Rolling Swarm/output/5_pos/reg/rot6/b=4096/2020-01-16-08-05-r1/model-final.h5'
-MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/old_second_stage/new_labels/cat/model-final.h5'
-OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/13_colours_lab/'
-TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/13_colours_lab/training_rot9_9colors.record'
-EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/13_colours_lab/eval/'
+#MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/old_second_stage/new_labels/cat/model-final.h5'
+#MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/8-24/cat/2102/model-final.h5'
+MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/hm_2402/2020-02-24-19-43-r1/model-final.h5'
+OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/hm/'
+TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/8-24_v1/training/training_rot9_13colors_8-24.record'
+EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/8-24_v1/test/'
 LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/robot_label_map_komplett.pbtxt'
 TRAIN_OR_VAL = 'val'
 #MODE = "regression"
@@ -66,7 +68,8 @@ second_stage_model = load_model(MODEL,
                    'DepthwiseConv2D': DepthwiseConv2D,
                    'angle_mse': angle_mse,
                    'angle_mae': angle_mae,
-                   'angle_bin_error': angle_bin_error})
+                   'angle_bin_rmse': angle_bin_rmse})
+                   #'angle_bin_error': angle_bin_error})
                    #loss: CategoricalCrossentropy,
                    #metrics: Accuracy})
 

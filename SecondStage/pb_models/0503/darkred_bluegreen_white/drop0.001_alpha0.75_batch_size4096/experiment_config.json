@@ -1,0 +1,14 @@
+{
+    "alpha": 0.75,
+    "batch_size": 4096,
+    "dataset": "default",
+    "dropout": 0.001,
+    "epochs_bin": 70,
+    "epochs_cat": 100,
+    "epochs_reg": 60,
+    "img_size": 35,
+    "learning_rate": 0.0001,
+    "name": "ssdef_drop0.001_alpha0.75_batch_size4096__cat_training_rot9_8-24_10_darkred_bluegreen_white",
+    "optimizer": "adam",
+    "repetions": 1
+}
