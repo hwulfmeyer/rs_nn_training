@@ -33,9 +33,6 @@ import sys
 sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/")
 from rs_nn_training.SecondStage_colab.second_stage_utils import *
 
-def angle_mae(y_true, y_pred):
-    return K.mean(K.abs(angle_diff2(y_true, y_pred)), axis=-1)
-
 def convertGraph( modelPath, outdir, numoutputs, prefix, name):
     '''
     Converts an HD5F file to a .pb file for use with Tensorflow.

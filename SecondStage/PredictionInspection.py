@@ -9,28 +9,27 @@ import numpy as np
 from keras.layers import DepthwiseConv2D, ReLU
 from keras.losses import CategoricalCrossentropy
 from keras.metrics import Accuracy
-#from keras.utils.generic_utils import CustomObjectScope
+
+####################################################################
 
 import sys
 #path des dir in dem rs_nn_training liegt
 sys.path.insert(0, "/home/josi/OvGU/Rolling Swarm/")
 
 from object_detection.utils import label_map_util
-
 from rs_nn_training.Utils.file_utils import *
 from second_stage_utils import *
 
-# disable GPU
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+####################################################################
 
-#MODEL = '/home/josi/OvGU/Rolling Swarm/output/5_pos/reg/rot6/b=4096/2020-01-16-08-05-r1/model-final.h5'
-#MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/old_second_stage/new_labels/cat/model-final.h5'
-#MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/8-24/cat/2102/model-final.h5'
-MODEL = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/pb_models/hm_2402/2020-02-24-19-43-r1/model-final.h5'
-OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/hm/'
-TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/data/8-24_v1/training/training_rot9_13colors_8-24.record'
-EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/data/8-24_v1/test/'
-LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/robot_label_map_komplett.pbtxt'
+MODEL = '/home/josi/OvGU/Rolling Swarm/output/final_final/output/ssdef_drop0.001_alpha0.75_batch_size1024_cat/2020-03-28-13-40-r0/model-final.h5'
+OUT_PATH = '/home/josi/OvGU/Rolling Swarm/output/inference/'
+TRAIN_RECORD = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/data/10_label/training_rot9_10colors.record'
+EVAL_DIR = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/data/10_label/eval/'
+LABEL_MAP_PATH = '/home/josi/OvGU/Rolling Swarm/rs_nn_training/SecondStage/label_map.pbtxt'
+
+####################################################################
+
 TRAIN_OR_VAL = 'val'
 #MODE = "regression"
 MODE = "classification"
@@ -38,6 +37,11 @@ TYPES = ['sphero']
 IMG_SIZE = 35
 
 SAVE_RESULTS=True
+# disable GPU
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+####################################################################
+
 TIMESTAMP = "{:%Y-%m-%d-%H-%M-%S}".format(datetime.now())
 OUT_PATH += TIMESTAMP+'/'
 os.makedirs(OUT_PATH, exist_ok=True)
@@ -54,14 +58,7 @@ else:
     print(eval_records)
     X,Y,Z,D = tf_record_extract_crops(eval_records, 1, 0.0, 0.0) 
     X_val, Y_val, Z_val = data_to_keras(X,Y,Z,num_classes,IMG_SIZE)
-#X_val
 
-print('********************************************************************')
-print(X_val)
-print(Y_val)
-print(Z_val)
-
-#X_val
 second_stage_model = load_model(MODEL,
                    custom_objects={
                    'relu6': ReLU,
@@ -70,11 +67,8 @@ second_stage_model = load_model(MODEL,
                    'angle_mae': angle_mae,
                    'angle_bin_rmse': angle_bin_rmse})
                    #'angle_bin_error': angle_bin_error})
-                   #loss: CategoricalCrossentropy,
-                   #metrics: Accuracy})
 
 predictions = second_stage_model.predict(np.array(X_val))
-#predictions = second_stage_model.predict(X_val)
 cat = np.argmax(predictions[0],axis=1)
 cat_score = np.max(predictions[0],axis=1)
 ori = predictions[1]
@@ -82,7 +76,6 @@ ori = predictions[1]
 if MODE == "classification":
     for i in range(len(X_val)):
         if cat[i] == Y[i]:
-            #print(i)
             continue
         img = Image.fromarray(X_val[i])
         pred_label = label_map[cat[i]]['name']
@@ -101,5 +94,3 @@ if MODE == "regression":
             print('Image {} diff of {} and {} is {}'.format(i, pred, gt, diff))
             img.save(OUT_PATH+'{:03d}-pred-{}-gt-{}.png'.format(i,pred,gt))
     print(num_in_tol / len(X_val))
-    # Doesn't work.. Why?
-    #print('MAE: {}'.format(np.mean(np.abs(np_angle_diff2(Z,ori)))))

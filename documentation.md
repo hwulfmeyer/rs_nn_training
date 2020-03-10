@@ -4,7 +4,8 @@ The camera tracking module is responsible for detecting various robots in a came
 The goals for this project were:
 * improving the detection rate at different positions inside the arena
 * previously certain positions, especially near edges, led to erroneous detections
-* improving the amount of colours that can be detected independently
+* increasing the amount of distinguishable colours
+* reducing the rotation deviation
 * cleaning up and improving the training pipeline for the Two-Stage Detector architecture
 * updating deprecated parts of the code in conjunction with current framework versions
 
@@ -104,7 +105,23 @@ After fine tuning the parameters of the SSD MobileNet v2 we were able to reach a
 
 ## Second stage
 
+After cropping out the bounding boxes of the original image and resizing to 35x35 pixels, the second stage determines the colour and rotation in two separate convolutional neural networks. Both networks use a pre-trained MobileNet.
 
+### Training Data
+
+We used 17 crops of each colour to generate our data sets. The crops were divided into 11 crops for training and 6 to test the result. The compositor gives the opportunity to configure the amount of variations of each image used for the data sets. We used 9 variations. Less than 9 seemed to underfit on the test data. Way more than 9 tends to overfit on the training set and has a higher risk of overfitting on artificially generated images. With a different amount of colours and crops per colour, the number of variations probably needs to be adapted.
+
+### Identification Net
+
+The critical part for achieving a reliable identification, is choosing the right colours. Spheros accept any RGB colour with values between 0 and 255, but aren't able to visualize all of them. To select the most different colours, we filtered by using high value differences and trusting on our eyes to detect the best ones. Maybe, better results could be achieved with analysing the RGB values of the images the camera records, but there where no signs that the camera makes colours more distinguishable. Rather, the low resolution lead to very similar images of colours, we could easily tell apart.	
+
+Another problem is, that the colour representation varies widely depending on the position in the arena, daylight and symbols on the spheros that could cover the LEDs. With our sample of crops, it wasn't possible to generate data sets that include all the different shades. Increasing or decreasing the brightness in the generated images and adding noise while training, made the network more robust. A higher amount of training data should improve the performance tremendously. 
+
+### Rotation Net
+
+The rotation  of a sphero is determined dependent on the position of the back led in relation to the two other LEDs. We already achieved good training results with the default configuration. Using mirrored data further increased the performance (see compositor). 
+
+But the rotation is never a reliable value. In motion, different camera angles and due to the marks, LEDs are often covered, what leads to a wrong prediction. Because we used binning, there will always be an output between 0 and 360 degree. Classification with an additional 'not predictable' class, could solve that problem, but maybe doesn't work as good. Otherwise, the output is just usable as a reference value when standing still.
 
 ## Problems
 This section is dedicated to various problems/anomalies encountered during the project.
