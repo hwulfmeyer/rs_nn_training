@@ -1,3 +1,6 @@
+"""
+Captures pictures directly from the camera
+"""
 import sys
 #Fix problem with ros python path
 #sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')

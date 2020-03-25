@@ -27,8 +27,8 @@ green => bright_green
 blue => bright_blue
 
 dark_red => 150,0,0
-dark_green => 128,0,0 //0,128,0 ?
-dark_blue => 150,0,0 //0,0,150 ?
+dark_green => 0,128,0
+dark_blue => 0,0,150
 white => 185,128,50
 
 // "rgb(0,255,255)" and "rgb(255,255,255)" look almost identical

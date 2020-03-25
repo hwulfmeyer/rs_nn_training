@@ -1,3 +1,7 @@
+"""
+Captures pictures directly from the camera
+Very simple implementation
+"""
 import rospy
 import cv2
 import time
