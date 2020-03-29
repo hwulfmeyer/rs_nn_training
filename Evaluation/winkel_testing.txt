@@ -1,0 +1,21 @@
+ - statisch
+	- Alle farben mit Winkel 0, 90, 180, 270 testen
+ - dynamisch
+	- strecke fahren lassen, links rechts und oben unten
+
+
+sphero_bringup sphero.launch
+rosrun sphero_teleop sphero_teleop.py für steuerung
+rostopic echo /nn_track0/sphero/sphero_green
+
+
+["red",
+"yellow",
+"lime_green",
+"magenta", 
+"purple",
+"green",
+"dark_green",
+"light_blue",
+"blue",
+"dark_blue"]
