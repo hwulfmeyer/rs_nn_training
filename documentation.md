@@ -16,7 +16,7 @@ The data aquisition process is a rather mundane and time consuming task, which i
 Based on the previous work we followed the same principle: 
 1. Spheros are placed in different spots in the arena and static pictures are taken with the camera. [See Image Recorder directory](./Compositor/image_recorder)
 2. The spheros in these pictures are cropped out using a round cutout of size 25x25 and saved with a transparent background.
-3. Crops of the Spheros are all zeroed to a predefined angle.
+3. Crops of the Spheros are all zeroed to a predefined angle. (back LED at the bottom of the picture)
 
 Gimp was used for Step 2 and 3.
 Since the second stage has the goal of predicting the angle of the spheros a round crop out (and subsequently a transparent background) is used to prevent the neural network of being able to learn the edges of a hypothetical square crop. Because the compositor rotates the crops to create more data great care has to be taken such that the spheros in the crops are roughly centered. Centered here means that the middle of a crop should be between the two color leds of the sphero.
@@ -48,12 +48,14 @@ Initially we used 7 crops per color and later scaled this up to 17 crops per col
 The crops are split up into training and validation and then used to augment more data.
 The augmentation utilizes changes in brightness, scaling, rotation, and translation. Additionally, also horizontal mirroring is used. Relatively speaking the process is almost identical to the first and second stage. Nevertheless, there are different use cases for each stage that need to be considered.
 
-First Stage is supplied with pictures that have the same aspect ratio resolution size as the camera pictures (400x300, 800x600, ..., 1600x1200). The crops are superimposed at a random position on these pictures and accurately scaled to represent the resolution.
+The training data for the first stage contains pictures that have the same aspect ratio resolution as the camera pictures (1600x1200). Usually the full size is not taken but instead a scaled down resolution (400x300). A number of crops are then superimposed with a random position, brightness, rotation, and scaling on these pictures and also accurately scaled to represent the resolution, i.e. a background size of 400x300 means the spheros have 1/4 of their original size. For each picture a list of bounding box values are supplied to the TFRecord file.
 
-Second Stage:
-* Hintergründe sind 35x35 groß mit jeweils einem Sphero
-* Alle 360 Winkel werden X mal wiederholt
-(Rotation nicht zufällig)
+For the second stage for each crop every 360° rotation is repeated a set amount of times. Concurrently the crops are set to a random scale and brightness for every example. Next, the crops are superimposed on a 35x35 background with a random position.
+A 35x35 sized background is used to make it possible to choose a random position for the crops. This is done because it can not be expected that the first stage supplies the second stage with very accurate bounding boxes of the spheros, which means the training data should include examples where spheros are not in the middle. Theoretically this should not constitute a problem since Convolutional Neural Networks (CNN) are translation invariant. However, additionaly to making sure that every weight of every filter in the CNN is trained equally (we only have 17 crops per color) the inaccuracy of the first stage is problematic for the rotation prediction in the second stage. If we do not inclue a random position the rotation prediction could simply learn the location of the back LED in the crops to predict the angle. Using a random position forces the network to learn the location of the back LED in relation to the color LEDs.
+Since the spheros were manually zeroed to a set angle and manually cropped and centered it includes some human error. This error can be reduced by including random horizontal mirroring in the compositor, which is applied before every other augmentation method. For each example the ID and Rotation is safed in the TFRecord.
+
+The above mentioned backgrounds contain very minor random noise.
+We used +-10% brightness and scaling. The brightness differences could be made larger but then it should be ensured that they do not look like another color in the set, e.g. green and dark green or blue and light blue.
 
 
 ### Future Work

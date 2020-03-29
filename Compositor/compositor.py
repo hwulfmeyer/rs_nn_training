@@ -140,7 +140,7 @@ def generate_random_image(img, bg, edge_distance=0, rot=None, out_width=1600, wi
     img = copy.deepcopy(img)
     bg = copy.deepcopy(bg)
     scl = round(np.random.uniform(0.8, 1.2), 2)
-    img = img.resize((int(scl*img.width*scl_factor),int(scl*img.height*scl_factor)), resample=Image.LANCZOS)
+    img = img.resize((int(scl*img.width*scl_factor),int(scl*img.height*scl_factor)), resample=Image.NEAREST)
 
     # random rotation
     if rot is None:
