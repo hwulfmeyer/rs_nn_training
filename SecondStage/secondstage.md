@@ -20,6 +20,7 @@ Additional packages: keras, tqdm, lxml, sklearn, pandas, numpy, seaborn, matplot
 | second_stage_utils   | contains custom metrics, load crops, define tensorboard callbacks |
 | label_map            | assigns a label (colour) to each ID                          |
 | PredictionInspection | iterates through test data and saves each image with predicted and groundtrouth label (debugging) |
+| exp_model	       | contains an experimental model with a custom network		| 
 
 
 
