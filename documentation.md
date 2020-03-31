@@ -1,5 +1,5 @@
 # WS 19/20 - Rolling Swarm Camera Tracking
-The camera tracking module is responsible for detecting various robots in a camera image and labeling them according to their colour. For this project the focus was lying entirely on the Sphero platform, however some of the results may also be applicable to different robots.
+The camera tracking module is responsible for detecting various robots in a camera image and labelling them according to their colour. For this project the focus was lying entirely on the Sphero platform, however some of the results may also be applicable to different robots.
 
 The goals for this project were:
 * improving the detection rate at different positions inside the arena
@@ -9,20 +9,20 @@ The goals for this project were:
 * cleaning up and improving the training pipeline for the Two-Stage Detector architecture
 * updating deprecated parts of the code in conjunction with current framework versions
 
-Most code found in this project was optimizied to be run on google colab. The files are jupyter notebooks and it should be able to run them on a pc with minor tweaks. Use the jupyter notebook files (ipynb) before using the .py files.
+Most code found in this project was optimized to be run on Google Colab. The files are jupyter notebooks and it should be able to run them on a pc with minor tweaks. Use the jupyter notebook files (ipynb) before using the .py files.
 
 ## Compositor
 The compositor creates data sets for the training and validation of the first and second stage of the framework. The data is serialized and stored in a file using the TFRecord data format. [Compositor directory](./Compositor/)
 
-### Data Aquisition
-The data aquisition process is a rather mundane and time consuming task, which is unfortunately not really fully automateable.  
-Based on the previous work we followed the same principle: 
+### Data Acquisition
+The data acquisition process is a rather mundane and time consuming task, which is unfortunately not really fully automateable.  
+Based on the previous work we followed the same principle:
 1. Spheros are placed in different spots in the arena and static pictures are taken with the camera. [See Image Recorder directory](./Compositor/image_recorder)
-2. The spheros in these pictures are cropped out using a round cutout of size 25x25 and saved with a transparent background.
+2. The Spheros in these pictures are cropped out using a round cut-out of size 25x25 and saved with a transparent background.
 3. Crops of the Spheros are all zeroed to a predefined angle. (back LED at the bottom of the picture)
 
 Gimp was used for Step 2 and 3.
-Since the second stage has the goal of predicting the angle of the spheros a round crop out (and subsequently a transparent background) is used to prevent the neural network of being able to learn the edges of a hypothetical square crop. Because the compositor rotates the crops to create more data great care has to be taken such that the spheros in the crops are roughly centered. Centered here means that the middle of a crop should be between the two color leds of the sphero.
+Since the second stage has the goal of predicting the angle of the Spheros a round crop out (and subsequently a transparent background) is used to prevent the neural network of being able to learn the edges of a hypothetical square crop. Because the compositor rotates the crops to create more data great care has to be taken such that the Spheros in the crops are roughly centered. Centered here means that the middle of a crop should be between the two color leds of the Sphero.
 
 The above process has to be repeated for every possible color that is going to be used. The following colors were tested:
 | Color         | RGB Values    |
@@ -51,22 +51,22 @@ Initially we used 7 crops per color and later scaled this up to 17 crops per col
 The crops are split up into training and validation and then used to augment more data.
 The augmentation utilizes changes in brightness, scaling, rotation, and translation. Additionally, also horizontal mirroring is used. Relatively speaking the process is almost identical to the first and second stage. Nevertheless, there are different use cases for each stage that need to be considered.
 
-The training data for the first stage contains pictures that have the same aspect ratio resolution as the camera pictures (1600x1200). Usually the full size is not taken but instead a scaled down resolution (400x300). A number of crops are then superimposed with a random position, brightness, rotation, and scaling on these pictures and also accurately scaled to represent the resolution, i.e. a background size of 400x300 means the spheros have 1/4 of their original size. For each picture a list of bounding box values are supplied to the TFRecord file.
+The training data for the first stage contains pictures that have the same aspect ratio resolution as the camera pictures (1600x1200). Usually the full size is not taken but instead a scaled down resolution (400x300). A number of crops are then superimposed with a random position, brightness, rotation, and scaling on these pictures and also accurately scaled to represent the resolution, i.e. a background size of 400x300 means the Spheros have 1/4 of their original size. For each picture a list of bounding box values are supplied to the TFRecord file.
 
 For the second stage for each crop every 360° rotation is repeated a set amount of times. Concurrently the crops are set to a random scale and brightness for every example. Next, the crops are superimposed on a 35x35 background with a random position.  
-A 35x35 sized background is used to make it possible to choose a random position for the crops. This is done because it can not be expected that the first stage supplies the second stage with very accurate bounding boxes of the spheros, which means the training data should include examples where spheros are not exactly in the middle. Theoretically this should not constitute a problem since Convolutional Neural Networks (CNN) are translation invariant. However, additionaly to making sure that every weight of every filter in the CNN is trained equally (we only have 17 crops per color) the inaccuracy of the first stage is problematic for the rotation prediction in the second stage. If we do not include a random position the rotation prediction could simply learn the location of the back LED in the crops to predict the angle. Using a random position forces the network to learn the location of the back LED in relation to the color LEDs.  
-Since the spheros were manually zeroed to a set angle and manually cropped and centered it includes some human error. This error can be reduced by including random horizontal mirroring in the compositor, which is applied before every other augmentation method. For each example the ID and Rotation is saved in the TFRecord.
+A 35x35 sized background is used to make it possible to choose a random position for the crops. This is done because it can not be expected that the first stage supplies the second stage with very accurate bounding boxes of the Spheros, which means the training data should include examples where Spheros are not exactly in the middle. Theoretically this should not constitute a problem since Convolutional Neural Networks (CNN) are translation invariant. However, additionaly to making sure that every weight of every filter in the CNN is trained equally (we only have 17 crops per color) the inaccuracy of the first stage is problematic for the rotation prediction in the second stage. If we do not include a random position the rotation prediction could simply learn the location of the back LED in the crops to predict the angle. Using a random position forces the network to learn the location of the back LED in relation to the color LEDs.  
+Since the Spheros were manually zeroed to a set angle and manually cropped and centered it includes some human error. This error can be reduced by including random horizontal mirroring in the compositor, which is applied before every other augmentation method. For each example the ID and Rotation is saved in the TFRecord.
 
 The above mentioned backgrounds contain very minor random noise.
 We used +-10% brightness and scaling. The brightness differences could be made larger but then it should be ensured that they do not look like another color in the set, e.g. green and dark green or blue, light blue and dark blue.
 
 
 ### Future Work
-A neural network is only as good as the data that you feed it to. This is why the current data aquisition process presents a serious shortcoming which should be adressed in future revisions of this framework. Even 17 crops per color does not seem to accurately approximate the possible dynamic and characteristic of the colored leds of the spheros in real life scenarios. One problem is that these are only 17 positions from infinitely possible positions inside the arena. Another problem is that the chosen positions of the spheros are biased because we placed them. This likely results in the data not having a high representing accuracy of the actual data that has to be predicted later on. At best this will only be an issue for the Second Stage Identification Prediction.
+A neural network is only as good as the data that you feed it to. This is why the current data acquisition process presents a serious shortcoming which should be addressed in future revisions of this framework. Even 17 crops per color does not seem to accurately approximate the possible dynamic and characteristic of the colored leds of the Spheros in real life scenarios. One problem is that these are only 17 positions from infinitely possible positions inside the arena. Another problem is that the chosen positions of the Spheros are biased because we placed them. This likely results in the data not having a high representing accuracy of the actual data that has to be predicted later on. At best this will only be an issue for the Second Stage Identification Prediction.
 
-One possible way of preventing this issue is through semi-automatic data aquisition. The crops are still used to train the first stage. The bounding box values created by the first stage on live pictures are then used to create crops from these live pictures, for example by letting spheros of one specific color drive around in the arena. However, this still has to be repeated for every possible color. This only represents a way of automating the process for the training of the second stage identification prediction but not for the rotation prediction.
+One possible way of preventing this issue is through semi-automatic data acquisition. The crops are still used to train the first stage. The bounding box values created by the first stage on live pictures are then used to create crops from these live pictures, for example by letting Spheros of one specific color drive around in the arena. However, this still has to be repeated for every possible color. This only represents a way of automating the process for the training of the second stage identification prediction but not for the rotation prediction.
 
-The rotation identification already worked very well even with a few amount of data. However, when the first stage supplies the second stage with inaccurate bounding boxes such that the spheros are not roughly centered the identification error got worse. The accuracy could be further improved by increasing the random positioning of the crops in the backgrounds by making the crops smaller and also allowing the script to cut a few pixels off from the crops to place them further to the edges of the backgrounds.
+The rotation identification already worked very well even with a few amount of data. However, when the first stage supplies the second stage with inaccurate bounding boxes such that the Spheros are not roughly centered the identification error got worse. The accuracy could be further improved by increasing the random positioning of the crops in the backgrounds by making the crops smaller and also allowing the script to cut a few pixels off from the crops to place them further to the edges of the backgrounds.
 
 ## First Stage
 This part of the architecture detects each robot contained within a full camera image. The output of the network is a list of bounding boxes with soft-max confidences towards each possible robot type. The first stage does however not difference between the colours of the detected Spheros, this is part of the Second Stage. The whole architecture is based on the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection). The following sections will mainly focus on theoretical descriptions of our actions and evaluations. The practical How-to's are discussed in the [First Stage directory](./FirstStage)
@@ -80,7 +80,7 @@ When choosing the resolution of the full camera images, no improvements were mea
 ### The detection model
 We mainly used a Single Shot Detector approach based on the MobileNet v2 Architecture for Object Detection. This proved to be a problem with small objects such as Spheros, since SSD uses a drastically downscaled feature map on the entire image to detect objects while saving computational power. For large objects that cover multiple "Pixels" within this feature map, the model is then able to make out accurate bounding boxes containing these. Since Spheros only cover 25x25 of the entire 1600x1200 Pixel area, this feature map either has have a very high resolution, or a single Sphero will merely be detected by one Pixel in this feature map, resulting in poor accuracy. For more information on the Single Shot Detector architecture, refer to the [official paper](https://arxiv.org/pdf/1512.02325.pdf).
 
-One solution the is more invariant to object size is Faster RCNN. This architecture however at its' fastest still takes about twice as much time for a detection as an SSD, while being much more computationally expensive.
+One solution that is more invariant to object size would be Faster RCNN. This architecture however at its' fastest still takes about twice as much time for a detection in comparison to an SSD, while being much more computationally expensive.
 
 Further descriptions about which parameters were used in conjunction with those models can be found in the [models directory](./FirstStage/models).
 
@@ -119,23 +119,19 @@ In some instances it could be observed that a too high 'alpha' value tends to ov
 'Adam' was always used as the optimizer.  
 The learning rate can be lowered to get a more detailed learning curve and may also prevent overfitting if set to lower values, default value we used is '1e-3'.
 
-Additionally to the MobileNet it is possible to use a custom network. We tested this custom nework and achieved good validation results but decided to use the MobileNet instead, because we were unsure which other changes a custom network with a few layers would introduce in the test results and the MobileNet worked very well (never change a running system?). Another reason is that the custom network should be heavily optimized (number of layers, number of neurons, dropout, ...) and we were limited in computation power and time to do so.
-The custom network could potentially produce better results for the spheros.
-
+Additionally to the MobileNet it is possible to use a custom network. We tested this custom network and achieved good validation results but decided to use the MobileNet instead, because we were unsure which other changes a custom network with a few layers would introduce in the test results and the MobileNet worked very well (never change a running system?). Another reason is that the custom network should be heavily optimized (number of layers, number of neurons, dropout, ...) and we were limited in computation power and time to do so.
+The custom network could potentially produce better results for the Spheros.
 
 ### Training Data
-
 We used 17 crops of each colour to generate our data sets. The crops were divided into 11 crops for training and 6 to test the result. The compositor gives the opportunity to configure the amount of variations (number of times the 360° rotations are repeated) of each image used for the data sets. We used 9 variations. Less than 9 seemed to underfit on the test data. Way more than 9 tends to overfit on the training set and has a higher risk of overfitting on artificially generated images. With a different amount of colours and crops per colour, the number of variations probably needs to be adapted.
 
 ### Identification Net
-
 The critical part for achieving a reliable identification is choosing the right colours. Spheros accept any RGB colour with values between 0 and 255, but aren't able to visualize all of them. To select the most different colours, we filtered by using high value differences and trusting on our eyes to detect the best ones. Maybe better results could be achieved with analysing the RGB values of the images the camera records, but there where no signs that the camera makes colours more distinguishable. Rather, the low resolution lead to very similar images of colours, we could easily tell apart.
 
-Another problem is, that the colour representation varies widely depending on the position in the arena, daylight and symbols on the spheros that could cover the LEDs. With our sample of crops, it wasn't possible to generate data sets that include all the different shades. Increasing or decreasing the brightness in the generated images and adding noise while training, made the network more robust. A higher amount of training data should improve the performance tremendously. 
+Another problem is, that the colour representation varies widely depending on the position in the arena, daylight and symbols on the Spheros that could cover the LEDs. With our sample of crops, it wasn't possible to generate data sets that include all the different shades. Increasing or decreasing the brightness in the generated images and adding noise while training, made the network more robust. A higher amount of training data should improve the performance tremendously.
 
 ### Rotation Net
-
-The rotation  of a sphero is determined dependent on the position of the back led in relation to the two other LEDs. We already achieved good training results with the default configuration. Using mirrored data further increased the performance (see compositor). 
+The rotation  of a Sphero is determined dependent on the position of the back led in relation to the two other LEDs. We already achieved good training results with the default configuration. Using mirrored data further increased the performance (see compositor).
 
 But the rotation is never a reliable value. In motion, different camera angles and due to the marks, LEDs are often covered, which leads to a wrong prediction. Because we used binning, there will always be an output between 0 and 360 degree. Classification with an additional 'not predictable' class, could solve that problem, but maybe doesn't work as good. Otherwise, the output is just usable as a reference value when standing still.
 
@@ -149,3 +145,11 @@ The colours displayed by the Spheros' RGB LEDs are not "uniform". The three LEDs
 The brightness of all LEDs are not equal. The blue LED for example heavily outshines the other two LEDs, making most mix-colours appear mostly blue. The red LED seems to be the darkest.
 
 Because of the imprints on the clear hull of the Spheros, often some of the LEDs are covered, leading to erroneous detections. This is especially problematic if the blue LED used for rotational identification is covered up. Another source of this problem is the tilting of the internal circuit board of the Sphero during movements.
+
+### Camera
+Because of the rather low camera resolution, a Sphero's LED is only about 5x5 Pixels on the full image. Therefore even slight movements of the Sphero can drastically alter its visual representation within the image.
+
+### Others
+Because of the door and windows, there are certain reflections of sunlight visible within the arena. This could be somewhat mitigated by using a lower camera exposure time, however sometimes the First Stage can still wrongfully detect these reflections as Spheros.
+
+The automatic generation of training data via the compositor is fast, but also not perfect. The final datasets are just an approximation of what the real Spheros will look like at certain locations inside the arena. To mitigate this problem, an idea would be to first construct a working First Stage model and then to semi-automatically generate the data for the Second Stage through that.
